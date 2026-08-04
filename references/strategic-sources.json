@@ -1,0 +1,50 @@
+[
+  {
+    "organization": "McKinsey & Company",
+    "name": "QuantumBlack AI Insights",
+    "url": "https://www.mckinsey.com/capabilities/quantumblack/our-insights",
+    "priority": 1,
+    "accessMode": "html_then_domain_search",
+    "focus": ["AI strategy", "operating model", "enterprise adoption", "case studies"]
+  },
+  {
+    "organization": "McKinsey & Company",
+    "name": "McKinsey Artificial Intelligence Insights",
+    "url": "https://www.mckinsey.com/featured-insights/artificial-intelligence",
+    "priority": 2,
+    "accessMode": "html_then_domain_search",
+    "focus": ["industry transformation", "economic impact", "executive strategy"]
+  },
+  {
+    "organization": "Gartner",
+    "name": "Gartner AI Hub",
+    "url": "https://www.gartner.com/en/ai",
+    "priority": 1,
+    "accessMode": "domain_search",
+    "focus": ["AI strategy", "market forecasts", "governance", "enterprise use cases"]
+  },
+  {
+    "organization": "Gartner",
+    "name": "Gartner Newsroom",
+    "url": "https://www.gartner.com/en/newsroom/",
+    "priority": 2,
+    "accessMode": "html_then_domain_search",
+    "focus": ["public research summaries", "predictions", "executive surveys"]
+  },
+  {
+    "organization": "KPMG",
+    "name": "KPMG Generative AI Insights",
+    "url": "https://kpmg.com/us/en/ai.html",
+    "priority": 1,
+    "accessMode": "html_then_domain_search",
+    "focus": ["enterprise AI", "governance", "workforce", "industry case studies"]
+  },
+  {
+    "organization": "KPMG",
+    "name": "KPMG AI Quarterly Pulse",
+    "url": "https://kpmg.com/us/en/articles/2025/ai-quarterly-pulse-survey.html",
+    "priority": 1,
+    "accessMode": "html_then_domain_search",
+    "focus": ["AI investment", "enterprise deployment", "agent adoption", "measured outcomes"]
+  }
+]

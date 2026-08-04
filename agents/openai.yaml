@@ -1,0 +1,4 @@
+interface:
+  display_name: "SlimAI - AI Daily Digest"
+  short_description: "Bản tin AI chính hãng và chiến lược"
+  default_prompt: "Use $slimai-ai-daily-digest to create a Vietnamese SlimAI briefing with official product updates, strategic insights, verified case studies, open-source tools, and practical guides."
