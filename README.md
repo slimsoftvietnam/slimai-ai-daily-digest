@@ -171,6 +171,65 @@ Skill có thể chuẩn bị nội dung cho từng kênh. Việc đăng hoặc g
 
 Không lưu bot token, mật khẩu, API key hoặc thông tin đăng nhập trong repository, file hướng dẫn hay nội dung bản tin. Nếu một token đã được chia sẻ trong cuộc trò chuyện, hãy thu hồi token đó và tạo token mới.
 
+## Đặt lịch tự động và gửi Telegram mỗi ngày
+
+### Bạn cần chuẩn bị gì?
+
+| Thông tin | Ví dụ | Lưu ý |
+|---|---|---|
+| Giờ gửi | `07:00` | Ghi rõ múi giờ, ví dụ `Asia/Ho_Chi_Minh` |
+| Bot token | Nhận từ `@BotFather` | Là thông tin bí mật, không đưa vào GitHub hoặc prompt đặt lịch |
+| Group chat ID | Một số thường bắt đầu bằng dấu `-` | Bot phải được thêm vào group và có quyền gửi tin |
+| Topic ID | Chỉ cần với group dạng forum | Bỏ qua nếu group không dùng topic |
+| Nội dung | Tiếng Việt, tối đa 15 bài | Có thể dùng cấu hình mặc định của skill |
+
+### Thiết lập lần đầu
+
+1. Tạo bot bằng `@BotFather`, thêm bot vào Telegram group và gửi thử một tin nhắn trong group.
+2. Mở một task riêng tư trong Codex và cung cấp bot token một lần để Codex lưu vào biến môi trường `SLIMAI_TELEGRAM_BOT_TOKEN`. Lưu chat ID vào `SLIMAI_TELEGRAM_CHAT_ID`; nếu dùng topic, lưu thêm `SLIMAI_TELEGRAM_THREAD_ID`.
+3. Khởi động lại ứng dụng Codex sau khi tạo biến môi trường, rồi yêu cầu gửi một bản tin thử.
+4. Chỉ tạo lịch sau khi bản thử đến đúng group và hiển thị đúng định dạng.
+
+Bạn có thể gửi yêu cầu thiết lập như sau:
+
+```text
+Hãy lưu thông tin Telegram tôi cung cấp vào các biến môi trường
+SLIMAI_TELEGRAM_BOT_TOKEN và SLIMAI_TELEGRAM_CHAT_ID.
+Không in lại token, không ghi token vào repository hoặc nội dung task đặt lịch.
+Sau đó gửi một tin nhắn thử để xác nhận đúng group.
+```
+
+### Yêu cầu Codex tạo lịch
+
+Trong ứng dụng Codex desktop, gửi câu lệnh:
+
+```text
+Hãy tạo Scheduled Task trong task này, chạy hàng ngày lúc 07:00
+theo múi giờ Asia/Ho_Chi_Minh.
+
+Mỗi lần chạy, dùng $slimai-ai-daily-digest để tìm tin AI mới đạt tiêu chí.
+Chỉ gửi URL chưa từng gửi, dùng trạng thái tại
+work/slimai-ai-daily-digest-state.json để tránh trùng.
+
+Gửi bản tóm tắt tiếng Việt vào Telegram bằng các biến môi trường
+SLIMAI_TELEGRAM_BOT_TOKEN và SLIMAI_TELEGRAM_CHAT_ID.
+Dùng HTML, tắt link preview và chia thành nhiều phần nếu nội dung dài.
+Nếu không có tin mới đạt chuẩn, chỉ gửi một thông báo ngắn.
+Sau khi gửi, báo số phần và message ID nhưng không hiển thị token.
+```
+
+Sau khi tạo, mở mục **Scheduled** trong Codex để xem lịch và các lần chạy. Hãy kiểm tra vài bản tin đầu tiên trước khi để lịch hoạt động lâu dài.
+
+### Điều kiện để lịch chạy được
+
+- Nếu task dùng skill hoặc tệp trạng thái trên máy, máy phải bật, Codex desktop phải đang chạy và thư mục dự án vẫn tồn tại.
+- Task cần quyền truy cập Internet để đọc nguồn tin và gọi Telegram Bot API.
+- Telegram giới hạn mỗi tin nhắn văn bản ở 4.096 ký tự sau khi xử lý định dạng; skill sẽ tự chia nội dung thành nhiều phần.
+- Nếu đổi bot token hoặc group, hãy cập nhật biến môi trường rồi khởi động lại Codex.
+- Có thể tạm dừng, chạy thử, sửa giờ hoặc xem lịch sử tại mục **Scheduled**.
+
+Tài liệu chính thức: [Codex Scheduled Tasks](https://learn.chatgpt.com/docs/automations) · [Telegram Bot API](https://core.telegram.org/bots/api#sendmessage)
+
 ## Khi skill không hoạt động
 
 - Kiểm tra đúng đường dẫn `...\.codex\skills\slimai-ai-daily-digest\SKILL.md`.
