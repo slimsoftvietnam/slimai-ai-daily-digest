@@ -136,6 +136,35 @@ Nếu không đủ 15 bài tốt trong 24 giờ, skill có thể mở rộng ph�
 - Nhận định của cộng đồng và dự báo tư vấn phải được phân biệt với dữ liệu đã kiểm chứng.
 - Một số trang có thể chặn tự động hóa hoặc yêu cầu đăng nhập; skill không vượt paywall hoặc cơ chế bảo vệ truy cập.
 
+## Cách thêm nguồn tin
+
+Cách đơn giản nhất là gửi cho Codex tên nguồn và đường dẫn. Ví dụ:
+
+```text
+Hãy thêm blog NVIDIA AI vào $slimai-ai-daily-digest.
+Kiểm tra đây có phải nguồn chính hãng không, tìm RSS nếu có,
+thử đọc nguồn và chỉ cập nhật skill khi nguồn đạt tiêu chí.
+```
+
+Nếu chưa có đường dẫn, bạn có thể yêu cầu:
+
+```text
+Hãy tìm nguồn chính thức của [tên tổ chức], đánh giá độ tin cậy
+và đề xuất thêm vào $slimai-ai-daily-digest. Chưa cập nhật cho đến khi tôi đồng ý.
+```
+
+Codex sẽ xếp nguồn vào đúng nhóm:
+
+| Nhóm nguồn | Dùng cho | Tệp cấu hình |
+|---|---|---|
+| Chính hãng | Model, tính năng, API và thông báo sản phẩm | `references/official-sources.json` |
+| Chiến lược | Nghiên cứu, khảo sát và góc nhìn quản trị | `references/strategic-sources.json` |
+| Cộng đồng | Case study, mã nguồn mở và hướng dẫn thực tế | `references/sources.json` |
+
+Một nguồn chỉ nên được thêm khi có tác giả hoặc tổ chức rõ ràng, nội dung nguyên bản, đường dẫn hoạt động và phù hợp với tiêu chí bản tin. Với nguồn cộng đồng, ưu tiên RSS/Atom. Nếu nguồn chính hãng hoặc chiến lược không có RSS, skill có thể đọc HTML công khai hoặc tìm kiếm giới hạn trong đúng tên miền.
+
+Sau khi cập nhật, hãy yêu cầu Codex kiểm tra JSON, chạy thử nguồn mới và báo lỗi nếu trang chặn truy cập. Không thêm trang tổng hợp, bản sao nội dung, nguồn ẩn danh, trang chủ chung chung hoặc nguồn chủ yếu đăng quảng cáo. Tuyệt đối không lưu API key, cookie hay mật khẩu trong các tệp nguồn.
+
 ## Đăng lên Telegram, fanpage hoặc email
 
 Skill có thể chuẩn bị nội dung cho từng kênh. Việc đăng hoặc gửi ra bên ngoài chỉ được thực hiện khi bạn yêu cầu rõ ràng.
