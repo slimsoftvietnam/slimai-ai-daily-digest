@@ -46,5 +46,21 @@
     "priority": 1,
     "accessMode": "html_then_domain_search",
     "focus": ["AI investment", "enterprise deployment", "agent adoption", "measured outcomes"]
+  },
+  {
+    "organization": "IBM",
+    "name": "IBM Institute for Business Value",
+    "url": "https://www.ibm.com/thought-leadership/institute-business-value/en-us/",
+    "priority": 1,
+    "accessMode": "html_then_domain_search",
+    "focus": ["agentic AI", "enterprise operating model", "AI economics", "governance", "workforce", "case studies"]
+  },
+  {
+    "organization": "IBM",
+    "name": "IBM Think Agentic AI",
+    "url": "https://www.ibm.com/think/topics/agentic-ai",
+    "priority": 2,
+    "accessMode": "html_then_domain_search",
+    "focus": ["AI strategy", "agentic AI", "enterprise technology", "governance", "implementation guidance"]
   }
 ]
