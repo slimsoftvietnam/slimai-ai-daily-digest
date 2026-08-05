@@ -33,6 +33,14 @@ Read the Telegram bot token from `SLIMAI_TELEGRAM_BOT_TOKEN` and the target from
 
 On each run, select only new qualifying articles, compare canonical URLs with the previous successful delivery, and persist sent URLs in `work/slimai-ai-daily-digest-state.json` when local storage is available. Format Telegram messages as HTML, escape reserved characters, split text into parts below Telegram's 4096-character limit after entity parsing, and disable link previews. If no new article reaches the quality threshold, send one short status message instead of recycling old items. After a successful delivery, report the number of parts and returned message IDs without revealing credentials.
 
+## Scheduled Zalo delivery
+
+When the user requests Zalo delivery, send only after the public blog URL and social-preview image have been verified. Read the endpoint and key from `SLIMAI_ZALO_BOT_ENDPOINT` and `SLIMAI_ZALO_BOT_API_KEY`; never store or display the key. Send `POST` JSON `{"text":"..."}` with the `X-Api-Key` header.
+
+Use plain text only: no Markdown, HTML, asterisks, underscores, or bold syntax. Group related items under short emoji headings, keep every key point on one bullet line, and include every qualifying product update, operational warning, case study, open-source project, and strategic insight. Give Gartner, McKinsey, KPMG, and IBM separate bullet lines when their research qualifies; do not mention an organization merely to fill coverage.
+
+Do not impose an editorial 500-character limit or a fixed bullet count. If the API returns a real technical length limit, split the digest into ordered parts and place the CTA and blog URL only in the final part. Persist the successful blog URL and all returned message IDs in `work/slimai-ai-daily-digest-state.json`. Do not mark the URL sent when delivery fails.
+
 ## Managing news sources
 
 When the user asks to add a source, first identify its role and update only the matching allowlist:
@@ -138,6 +146,7 @@ When the user requests a blog article:
 
 - Use the most important verified official update as the primary SEO keyword. Do not default to a generic keyword such as `AI news today` when a named product, model, or feature has stronger search intent.
 - Use the title pattern `Bản tin SlimAI ngày DD/MM: {primary keyword + most important new impact}`. Keep it concise and do not describe a research preview or technical article as a public launch.
+- Build the URL slug from the primary SEO keyword and its specific new capability, for example `gpt-live-hoi-thoai-ai-lien-tuc`. Keep it short, lowercase, ASCII, hyphen-separated, and stable after publication. Do not use a generic date-only or `ban-tin-cong-nghe` slug when a named product or feature provides clearer search intent. Before publishing, check for collisions and add the date only when needed for uniqueness. Never change an already-published slug automatically; use a permanent redirect when the user explicitly approves a URL migration.
 - Do not display selection scores, score labels, or internal categories such as `Major AI Update` and `Verified AI Case Study` in public blog copy. Keep scoring internal for ranking.
 - Start with a two-paragraph answer-first introduction, followed by `Tóm tắt nhanh` with four to six bullets.
 - Number every major H2 section in reading order, for example `1. Tóm tắt nhanh`, `2. Cập nhật chính thức`, `3. Góc nhìn chiến lược`. Keep H3 subsections unnumbered unless a section is procedural.
@@ -181,3 +190,42 @@ Nếu một nền tảng không có cập nhật trong 7 ngày, ghi ngắn gọn
 ```
 
 Localize headings and summaries to the requested language. Keep source names, URLs, product names, and technical terminology accurate.
+
+### Zalo format
+
+Use this plain-text structure. Include only headings that have content and adapt their names to the day's stories.
+
+```text
+BẢN TIN SLIMAI NGÀY DD/MM
+
+Chủ đề nổi bật: {most important verified story}
+
+🎙️ AI giọng nói và mô hình mới
+
+• {one complete key point on one line}
+• {one complete key point on one line}
+
+🤖 Công cụ AI Agent và lập trình
+
+• {one complete key point on one line}
+
+⚠️ Cập nhật dịch vụ
+
+• {one complete key point on one line}
+
+📊 Nghiên cứu và xu hướng doanh nghiệp
+
+• Gartner: {finding and management implication}
+• McKinsey: {finding and management implication}
+• KPMG: {finding and management implication}
+• IBM: {finding and management implication}
+
+🎓 Đào tạo AI
+
+• {one complete key point on one line}
+
+👉 Xem chi tiết kèm phân tích và đánh giá:
+{public blog URL}
+```
+
+Keep the CTA and URL as the final two lines and add nothing after them. Do not include internal scores or separate source links in the Zalo summary.

@@ -125,7 +125,7 @@ Bản tin gồm các phần chính:
 
 Mỗi bài cộng đồng phải đạt tối thiểu `60/100`. Điểm càng cao thì bài càng phù hợp với các tiêu chí: giá trị, độ tin cậy, tính thực tiễn, độ mới và tính nguyên bản.
 
-Khi xuất bản thành bài blog, điểm số chỉ dùng nội bộ để chọn bài và không hiển thị trong nội dung. Bài blog dùng đoạn văn ngắn, đánh số các mục chính, dùng bảng khi nhiều tin có cùng trường thông tin, có phần tóm tắt nhanh và lấy tin quan trọng nhất làm từ khóa SEO chính. Không thêm mục “Phương pháp biên tập của SlimAI” nếu người dùng không yêu cầu.
+Khi xuất bản thành bài blog, điểm số chỉ dùng nội bộ để chọn bài và không hiển thị trong nội dung. Bài blog dùng đoạn văn ngắn, đánh số các mục chính, dùng bảng khi nhiều tin có cùng trường thông tin, có phần tóm tắt nhanh và lấy tin quan trọng nhất làm từ khóa SEO chính. Slug URL cũng phải lấy từ từ khóa chính và tính năng mới cụ thể, ví dụ `gpt-live-hoi-thoai-ai-lien-tuc`; tránh slug chung chung như `ban-tin-cong-nghe` hoặc chỉ có ngày tháng. Giữ slug ngắn, không dấu, ngăn cách bằng dấu gạch ngang và không tự đổi sau khi bài đã xuất bản. Không thêm mục “Phương pháp biên tập của SlimAI” nếu người dùng không yêu cầu.
 
 Nếu không đủ 15 bài tốt trong 24 giờ, skill có thể mở rộng phạm vi lên 48 giờ rồi tối đa 7 ngày. Skill không hạ điểm chất lượng chỉ để lấy đủ số lượng.
 
@@ -229,6 +229,36 @@ Sau khi tạo, mở mục **Scheduled** trong Codex để xem lịch và các l�
 - Có thể tạm dừng, chạy thử, sửa giờ hoặc xem lịch sử tại mục **Scheduled**.
 
 Tài liệu chính thức: [Codex Scheduled Tasks](https://learn.chatgpt.com/docs/automations) · [Telegram Bot API](https://core.telegram.org/bots/api#sendmessage)
+
+## Gửi bản tóm tắt qua Zalo Bot
+
+Sau khi bài blog được đăng và kiểm tra ảnh preview, skill có thể gửi một bản tóm tắt vào Zalo. Bạn cần cung cấp riêng tư:
+
+| Thông tin | Biến môi trường | Lưu ý |
+|---|---|---|
+| Endpoint Zalo Bot | `SLIMAI_ZALO_BOT_ENDPOINT` | Ví dụ endpoint nhận `POST` JSON |
+| API key | `SLIMAI_ZALO_BOT_API_KEY` | Không đưa vào GitHub hoặc prompt đặt lịch |
+
+Tin nhắn Zalo dùng văn bản thuần, không dùng Markdown hoặc HTML. Nội dung được chia thành các nhóm có emoji, mỗi ý chính nằm trên một dòng và không giới hạn cố định ở 500 ký tự hay 7 gạch đầu dòng. Nếu API có giới hạn kỹ thuật thực tế, skill sẽ chia thành nhiều phần; CTA và URL blog chỉ xuất hiện ở phần cuối.
+
+Mẫu yêu cầu:
+
+```text
+Sau khi đăng bài blog, hãy gửi bản tóm tắt qua Zalo Bot.
+Dùng SLIMAI_ZALO_BOT_ENDPOINT và SLIMAI_ZALO_BOT_API_KEY.
+
+Tin nhắn phải là văn bản thuần, không dùng Markdown hoặc HTML.
+Chia nội dung theo nhóm chủ đề có emoji, mỗi ý một dòng.
+Tóm tắt đủ các cập nhật quan trọng và tách riêng Gartner,
+McKinsey, KPMG, IBM nếu có nghiên cứu mới đạt chuẩn.
+
+Dòng cuối là:
+👉 Xem chi tiết kèm phân tích và đánh giá:
+{URL bài blog}
+
+Lưu URL và message ID thành công để tránh gửi trùng.
+Không hiển thị API key.
+```
 
 ## Khi skill không hoạt động
 
