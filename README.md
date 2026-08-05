@@ -4,10 +4,44 @@ Skill dành cho Codex giúp tạo bản tin AI tiếng Việt từ nguồn chín
 
 Bạn không cần biết lập trình để cài đặt hoặc sử dụng.
 
+## Bắt đầu trong 3 bước
+
+### 1. Nhờ Codex cài skill
+
+Sao chép và gửi câu này cho Codex:
+
+```text
+Hãy cài skill slimai-ai-daily-digest từ
+https://github.com/slimsoftvietnam/slimai-ai-daily-digest
+```
+
+Khi Codex báo cài xong, hãy mở một task mới.
+
+### 2. Tạo bản tin
+
+Gửi câu lệnh sau:
+
+```text
+Dùng $slimai-ai-daily-digest tạo bản tin AI hôm nay bằng tiếng Việt.
+```
+
+Skill sẽ tự tìm nguồn chính hãng, góc nhìn chiến lược và nội dung cộng đồng đáng tin cậy; bạn không cần chỉnh RSS, JSON hay mã nguồn.
+
+### 3. Chọn định dạng bạn muốn
+
+Bạn có thể nói thêm một trong các câu sau:
+
+- `Trình bày thành bài đăng Telegram dễ đọc.`
+- `Viết thành bài blog chuẩn SEO, không hiện điểm số.`
+- `Viết thành email bản tin có tiêu đề và phần kêu gọi hành động.`
+- `Tóm tắt ngắn để đăng fanpage.`
+
+Skill chỉ tạo nội dung trong chat. Việc gửi Telegram, email hoặc đăng blog chỉ được thực hiện khi bạn yêu cầu rõ ràng và cung cấp quyền truy cập phù hợp. Không đưa API key hoặc bot token vào repository công khai.
+
 ## Skill này làm được gì?
 
 - Tìm tính năng và model mới từ OpenAI, Claude, Gemini, Grok, Microsoft Copilot, Moonshot/Kimi, Seedance và Kling.
-- Bổ sung góc nhìn chiến lược từ McKinsey, Gartner và KPMG.
+- Bổ sung góc nhìn chiến lược từ McKinsey, Gartner, KPMG và IBM.
 - Chọn tối đa 15 bài cộng đồng đạt ít nhất 60/100 điểm.
 - Loại bài trùng, bài quảng cáo, nguồn không rõ ràng và bài thiếu bằng chứng.
 - Dẫn liên kết thẳng đến đúng bài viết nguồn.
@@ -75,17 +109,23 @@ Dùng $slimai-ai-daily-digest, ưu tiên cập nhật OpenAI, Claude và Gemini.
 Dùng $slimai-ai-daily-digest để viết bản email có tiêu đề, preheader và phần gợi ý hành động.
 ```
 
+```text
+Dùng $slimai-ai-daily-digest để viết bài blog dễ đọc, lấy tin nổi bật nhất làm từ khóa SEO chính và không hiển thị điểm số.
+```
+
 ## Cách đọc kết quả
 
 Bản tin gồm các phần chính:
 
 1. **Tóm tắt nhanh:** ba ý quan trọng nhất.
 2. **Cập nhật từ hãng:** tính năng, model, API, giá hoặc thay đổi sản phẩm.
-3. **Góc nhìn chiến lược:** nghiên cứu và khuyến nghị từ McKinsey, Gartner, KPMG.
+3. **Góc nhìn chiến lược:** nghiên cứu và khuyến nghị từ McKinsey, Gartner, KPMG và IBM.
 4. **Bài cộng đồng:** tối đa 15 bài đã được chấm điểm và lọc chất lượng.
 5. **Gợi ý áp dụng:** việc đội kỹ thuật, marketing hoặc quản lý có thể làm tiếp theo.
 
 Mỗi bài cộng đồng phải đạt tối thiểu `60/100`. Điểm càng cao thì bài càng phù hợp với các tiêu chí: giá trị, độ tin cậy, tính thực tiễn, độ mới và tính nguyên bản.
+
+Khi xuất bản thành bài blog, điểm số chỉ dùng nội bộ để chọn bài và không hiển thị trong nội dung. Bài blog dùng đoạn văn ngắn, đánh số các mục chính, dùng bảng khi nhiều tin có cùng trường thông tin, có phần tóm tắt nhanh và lấy tin quan trọng nhất làm từ khóa SEO chính. Không thêm mục “Phương pháp biên tập của SlimAI” nếu người dùng không yêu cầu.
 
 Nếu không đủ 15 bài tốt trong 24 giờ, skill có thể mở rộng phạm vi lên 48 giờ rồi tối đa 7 ngày. Skill không hạ điểm chất lượng chỉ để lấy đủ số lượng.
 
