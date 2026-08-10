@@ -87,8 +87,9 @@ Nếu một lần gửi Zalo mất phản hồi, skill sẽ không tự gửi l�
 
 ## Skill này làm được gì?
 
-- Tìm tính năng và model mới từ OpenAI, Claude, Gemini, Grok, Microsoft Copilot, Moonshot/Kimi, Seedance và Kling.
-- Bổ sung góc nhìn chiến lược từ McKinsey, Gartner, KPMG và IBM.
+- Tìm tính năng và model mới từ OpenAI, Claude, Gemini, Grok, Microsoft Copilot, Moonshot/Kimi, Mistral AI, Meta AI, NVIDIA, AWS AI, Seedance và Kling.
+- Bổ sung góc nhìn chiến lược từ McKinsey, Gartner, KPMG, IBM và Stanford HAI.
+- Theo dõi dự án và hướng dẫn mã nguồn mở nổi bật từ Hugging Face nhưng vẫn lọc theo tác giả, bằng chứng, repository và giấy phép.
 - Chọn tối đa 15 bài cộng đồng đạt ít nhất 60/100 điểm.
 - Loại bài trùng, bài quảng cáo, nguồn không rõ ràng và bài thiếu bằng chứng.
 - Dẫn liên kết thẳng đến đúng bài viết nguồn.

@@ -72,6 +72,38 @@
     "scope": ["models", "research"]
   },
   {
+    "platform": "Mistral AI",
+    "name": "Mistral AI News",
+    "url": "https://mistral.ai/news/",
+    "type": "news-index",
+    "priority": 1,
+    "scope": ["models", "Le Chat", "Vibe", "developer platform", "research", "open weights"]
+  },
+  {
+    "platform": "Meta AI",
+    "name": "Meta AI Blog",
+    "url": "https://ai.meta.com/blog",
+    "type": "news-index",
+    "priority": 1,
+    "scope": ["Meta AI", "models", "research", "open source", "case studies"]
+  },
+  {
+    "platform": "NVIDIA",
+    "name": "NVIDIA Technical Blog RSS",
+    "url": "https://developer.nvidia.com/blog/feed/",
+    "type": "rss",
+    "priority": 1,
+    "scope": ["AI models", "agentic AI", "inference", "developer tools", "infrastructure", "open source"]
+  },
+  {
+    "platform": "AWS AI",
+    "name": "AWS Artificial Intelligence Blog RSS",
+    "url": "https://aws.amazon.com/blogs/machine-learning/feed/",
+    "type": "rss",
+    "priority": 1,
+    "scope": ["Amazon Bedrock", "Amazon Nova", "SageMaker", "AI agents", "customer case studies", "technical guides"]
+  },
+  {
     "platform": "Grok",
     "name": "xAI Developer Release Notes",
     "url": "https://docs.x.ai/developers/release-notes",

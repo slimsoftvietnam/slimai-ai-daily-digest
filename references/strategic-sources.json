@@ -62,5 +62,13 @@
     "priority": 2,
     "accessMode": "html_then_domain_search",
     "focus": ["AI strategy", "agentic AI", "enterprise technology", "governance", "implementation guidance"]
+  },
+  {
+    "organization": "Stanford Institute for Human-Centered AI",
+    "name": "Stanford HAI AI Index",
+    "url": "https://hai.stanford.edu/ai-index",
+    "priority": 1,
+    "accessMode": "html_then_domain_search",
+    "focus": ["AI adoption", "investment", "technical progress", "responsible AI", "workforce", "policy", "global trends"]
   }
 ]

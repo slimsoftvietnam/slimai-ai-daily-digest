@@ -1,6 +1,6 @@
 ---
 name: slimai-ai-daily-digest
-description: Create the SlimAI-branded daily AI briefing, presenting evidence-backed strategic AI perspectives first, verified case studies second, and official product updates third. Discover official updates from OpenAI, Claude, Gemini, Grok, Microsoft Copilot, Moonshot/Kimi, Seedance, and Kling with official blogs or newsrooms checked before release notes, changelogs, and documentation; add strategic perspectives from McKinsey, Gartner, KPMG, and IBM; then rank practical articles from curated RSS feeds. Use when the user asks for a SlimAI digest, AI daily digest, official AI product updates, Microsoft or GitHub Copilot updates, strategic AI insights, enterprise AI trends, model launch briefing, technology roundup, or invokes $slimai-ai-daily-digest. Supports configurable time window, article count, and output language, including Vietnamese.
+description: Create the SlimAI-branded daily AI briefing, presenting evidence-backed strategic AI perspectives first, verified case studies second, and official product updates third. Discover official updates from OpenAI, Claude, Gemini, Grok, Microsoft Copilot, Moonshot/Kimi, Mistral, Meta AI, NVIDIA, AWS AI, Seedance, and Kling with official blogs or newsrooms checked before release notes, changelogs, and documentation; add strategic perspectives from McKinsey, Gartner, KPMG, IBM, and Stanford HAI; then rank practical articles from curated RSS feeds including Hugging Face. Use when the user asks for a SlimAI digest, AI daily digest, official AI product updates, Microsoft or GitHub Copilot updates, strategic AI insights, enterprise AI trends, model launch briefing, technology roundup, or invokes $slimai-ai-daily-digest. Supports configurable time window, article count, and output language, including Vietnamese.
 ---
 
 # SlimAI - AI Daily Digest
@@ -77,7 +77,7 @@ Validate the edited JSON, test a new RSS feed with `scripts/fetch-rss.mjs`, and 
 
    - Follow the strategic-source validation rules below and keep only evidence-backed items that meet the score threshold.
 
-2. Read `references/official-sources.json`. Check these platforms: OpenAI, Claude, Gemini, Grok, Microsoft Copilot, Moonshot/Kimi, Seedance, and Kling.
+2. Read `references/official-sources.json`. Check these platforms: OpenAI, Claude, Gemini, Grok, Microsoft Copilot, Moonshot/Kimi, Mistral AI, Meta AI, NVIDIA, AWS AI, Seedance, and Kling.
 
    - Within each platform, open official blogs, newsrooms, and their RSS feeds first. Then inspect release notes or changelogs, followed by product documentation only when the editorial sources do not establish the feature, rollout, availability, or technical detail.
    - Open every priority-1 source relevant to the requested platforms before any priority-2 or priority-3 source.
@@ -86,6 +86,7 @@ Validate the edited JSON, test a new RSS feed with `scripts/fetch-rss.mjs`, and 
    - Extract the release date, feature/model name, availability or rollout status, and the official source URL.
    - Link each item to the exact canonical article, announcement, release-note entry, or documentation page that supports that specific claim. Never publish a homepage, blog index, category page, RSS feed, generic changelog landing page, or search-results URL as the source. If one summary combines several releases, attach a separate exact URL to each release.
    - For Microsoft Copilot, distinguish consumer Copilot, Microsoft 365 Copilot, Copilot Studio, and GitHub Copilot instead of merging their releases into one ambiguous item.
+   - Treat NVIDIA and AWS feeds as mixed editorial sources. Keep material launches, measured customer deployments, substantive open-source releases, and practical implementation guides; exclude event promotion, routine partner marketing, and benchmark claims without enough context to assess them.
    - Search the default seven-day official-release window. When the user explicitly asks for the latest state of every platform, report the newest official entry for each platform even when it is older, and show its date.
    - Never describe a third-party report as an official launch. If no official confirmation exists, label it `Chưa xác nhận từ nguồn hãng` and keep it out of the official-launch section.
 
@@ -103,6 +104,7 @@ Validate the edited JSON, test a new RSS feed with `scripts/fetch-rss.mjs`, and 
    - Separate observed data from the publisher's recommendation. Treat consulting-firm forecasts as informed estimates, not settled facts.
    - For Gartner paywalled research, summarize only the public title, date, abstract, and explicitly visible findings. Never infer claims from inaccessible report content.
    - For IBM, prefer original IBM Institute for Business Value reports with visible dates, methodology, survey findings, or named operating-model frameworks. Use IBM Think only for coverage gaps. Treat expected benefits and executive forecasts as expectations, not observed results.
+   - For Stanford HAI, prefer the AI Index and original Stanford HAI research with visible data or methodology. Exclude media-mention cards, event promotion, generic announcements, and articles that merely quote third-party reporting.
    - Add qualifying items to a separate `Strategic AI Insight` section instead of presenting them as product launches.
    - Publish the exact research article, press release, report landing page, or public abstract URL. Do not substitute the organization's homepage, insights hub, newsroom index, or search-results page.
 
@@ -115,6 +117,8 @@ Validate the edited JSON, test a new RSS feed with `scripts/fetch-rss.mjs`, and 
    Require Node.js 18 or newer. Capture stdout as the article JSON array and retain stderr only for fetch statistics and failed-source diagnostics.
 
    Treat `references/sources.json` as a curated allowlist. Keep a community source only when it regularly publishes original, attributable work that can satisfy at least one priority group below. Prefer official publishers, maintainers, named practitioners, researchers, and security investigators. Exclude anonymous aggregators, content farms, SEO listicles, repost feeds, sources dominated by unsupported opinion, and feeds whose normal subject matter is unrelated to applied AI or notable open-source technology.
+
+   For Hugging Face, treat the feed as a publishing platform rather than a blanket trust signal. Prefer articles from the Hugging Face team, established research groups, model maintainers, and named organizations. Require direct repository, model card, license, experiment, or implementation evidence for open-source claims; reject thin self-promotion and unsupported leaderboard claims.
 
    Consider a feed unhealthy when it returns a permanent HTTP error such as 404 or 410, produces invalid feed data, or fails on three consecutive runs. Report transient failures without automatically treating the publisher as untrustworthy.
 
