@@ -241,6 +241,14 @@ Sau khi bài blog được đăng và kiểm tra ảnh preview, skill có thể 
 
 Tin nhắn Zalo dùng văn bản thuần, không dùng Markdown hoặc HTML. Nội dung được chia thành các nhóm có emoji, mỗi ý chính nằm trên một dòng và không giới hạn cố định ở 500 ký tự hay 7 gạch đầu dòng. Nếu API có giới hạn kỹ thuật thực tế, skill sẽ chia thành nhiều phần; CTA và URL blog chỉ xuất hiện ở phần cuối.
 
+Skill dùng `scripts/send-zalo.mjs` để bảo đảm trường `text` luôn là chuỗi thuần. Có thể kiểm tra trước mà không gửi tin:
+
+```text
+node scripts/send-zalo.mjs --file <duong-dan-tin-nhan.txt> --dry-run
+```
+
+Không dùng kết quả `Get-Content` của PowerShell rồi chuyển thẳng sang JSON, vì metadata của tệp có thể làm `text` thành object/array và khiến Zalo nhận tin không có nội dung.
+
 Mẫu yêu cầu:
 
 ```text

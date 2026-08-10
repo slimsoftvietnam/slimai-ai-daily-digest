@@ -35,7 +35,9 @@ On each run, select only new qualifying articles, compare canonical URLs with th
 
 ## Scheduled Zalo delivery
 
-When the user requests Zalo delivery, send only after the public blog URL and social-preview image have been verified. Read the endpoint and key from `SLIMAI_ZALO_BOT_ENDPOINT` and `SLIMAI_ZALO_BOT_API_KEY`; never store or display the key. Send `POST` JSON `{"text":"..."}` with the `X-Api-Key` header.
+When the user requests Zalo delivery, send only after the public blog URL and social-preview image have been verified. Read the endpoint and key from `SLIMAI_ZALO_BOT_ENDPOINT` and `SLIMAI_ZALO_BOT_API_KEY`; never store or display the key. Save the final plain-text message as UTF-8 and send it with `scripts/send-zalo.mjs --file <message.txt>`. This script sends `POST` JSON `{"text":"..."}` with the `X-Api-Key` header and reports only a sanitized message ID.
+
+Never construct the Zalo request body from a PowerShell `Get-Content` result piped directly into `ConvertTo-Json`. PowerShell can attach file metadata and serialize `text` as an object instead of a string. Before every POST, serialize and parse the payload locally, then require `text` to remain a non-empty primitive string. Treat delivery as successful only when the HTTP response is successful, the nested API result is `ok`, and a message ID is present. Use `node scripts/send-zalo.mjs --file <message.txt> --dry-run` to validate without sending.
 
 Use plain text only: no Markdown, HTML, asterisks, underscores, or bold syntax. Group related items under short emoji headings, keep every key point on one bullet line, and include every qualifying product update, operational warning, case study, open-source project, and strategic insight. Give Gartner, McKinsey, KPMG, and IBM separate bullet lines when their research qualifies; do not mention an organization merely to fill coverage.
 
