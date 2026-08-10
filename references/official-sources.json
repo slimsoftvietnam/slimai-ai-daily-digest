@@ -4,7 +4,7 @@
     "name": "OpenAI Product Release Notes",
     "url": "https://openai.com/products/release-notes/",
     "type": "release-notes",
-    "priority": 1,
+    "priority": 2,
     "scope": ["ChatGPT", "Codex", "API"]
   },
   {
@@ -12,7 +12,7 @@
     "name": "OpenAI News RSS",
     "url": "https://openai.com/news/rss.xml",
     "type": "rss",
-    "priority": 2,
+    "priority": 1,
     "scope": ["models", "products", "research"]
   },
   {
@@ -20,7 +20,7 @@
     "name": "Claude Release Notes",
     "url": "https://support.claude.com/en/articles/12138966-release-notes",
     "type": "release-notes",
-    "priority": 1,
+    "priority": 2,
     "scope": ["Claude", "Claude Code", "Cowork", "connectors"]
   },
   {
@@ -28,7 +28,7 @@
     "name": "Anthropic API Release Notes",
     "url": "https://docs.anthropic.com/en/release-notes/overview",
     "type": "release-notes",
-    "priority": 1,
+    "priority": 2,
     "scope": ["API", "models", "developer tools"]
   },
   {
@@ -36,7 +36,7 @@
     "name": "Anthropic Newsroom",
     "url": "https://www.anthropic.com/news",
     "type": "news-index",
-    "priority": 2,
+    "priority": 1,
     "scope": ["models", "products", "research", "company"]
   },
   {
@@ -44,7 +44,7 @@
     "name": "Gemini API Release Notes",
     "url": "https://ai.google.dev/gemini-api/docs/changelog",
     "type": "release-notes",
-    "priority": 1,
+    "priority": 2,
     "scope": ["Gemini API", "models", "developer tools"]
   },
   {
@@ -52,7 +52,7 @@
     "name": "Gemini Apps Updates",
     "url": "https://gemini.google.com/updates",
     "type": "release-notes",
-    "priority": 1,
+    "priority": 2,
     "scope": ["Gemini app"]
   },
   {
@@ -60,7 +60,7 @@
     "name": "Google Gemini Blog RSS",
     "url": "https://blog.google/products/gemini/rss/",
     "type": "rss",
-    "priority": 2,
+    "priority": 1,
     "scope": ["Gemini", "models", "product features"]
   },
   {
@@ -68,7 +68,7 @@
     "name": "Google DeepMind Blog RSS",
     "url": "https://deepmind.google/blog/rss.xml",
     "type": "rss",
-    "priority": 2,
+    "priority": 1,
     "scope": ["models", "research"]
   },
   {
@@ -76,7 +76,7 @@
     "name": "xAI Developer Release Notes",
     "url": "https://docs.x.ai/developers/release-notes",
     "type": "release-notes",
-    "priority": 1,
+    "priority": 2,
     "scope": ["Grok API", "models", "Imagine", "voice", "developer tools"]
   },
   {
@@ -84,7 +84,7 @@
     "name": "xAI News",
     "url": "https://x.ai/news",
     "type": "news-index",
-    "priority": 2,
+    "priority": 1,
     "scope": ["Grok", "models", "products", "company"]
   },
   {
@@ -92,7 +92,7 @@
     "name": "Grok Product Documentation",
     "url": "https://docs.x.ai/grok/overview",
     "type": "product-docs",
-    "priority": 2,
+    "priority": 3,
     "scope": ["Grok app", "Imagine", "voice", "connectors"]
   },
   {
@@ -108,7 +108,7 @@
     "name": "Kimi Code What's New",
     "url": "https://www.kimi.com/code/docs/en/kimi-code/whats-new.html",
     "type": "release-notes",
-    "priority": 1,
+    "priority": 2,
     "scope": ["Kimi Code", "models", "CLI", "agents"]
   },
   {
@@ -124,7 +124,7 @@
     "name": "Kimi API Models",
     "url": "https://platform.kimi.ai/docs/models",
     "type": "product-docs",
-    "priority": 2,
+    "priority": 3,
     "scope": ["available models", "deprecations", "context limits"]
   },
   {
@@ -132,7 +132,7 @@
     "name": "Microsoft 365 Copilot Release Notes",
     "url": "https://learn.microsoft.com/en-us/microsoft-365/copilot/release-notes?tabs=all",
     "type": "release-notes",
-    "priority": 1,
+    "priority": 2,
     "scope": ["Microsoft 365 Copilot", "Copilot Chat", "Office apps", "agents", "connectors"]
   },
   {
@@ -140,7 +140,7 @@
     "name": "Microsoft Copilot Studio What's New",
     "url": "https://learn.microsoft.com/en-us/microsoft-copilot-studio/whats-new",
     "type": "release-notes",
-    "priority": 1,
+    "priority": 2,
     "scope": ["Copilot Studio", "agents", "computer use", "models", "voice"]
   },
   {
@@ -148,7 +148,7 @@
     "name": "GitHub Copilot Changelog",
     "url": "https://github.blog/changelog/label/copilot/",
     "type": "release-notes",
-    "priority": 1,
+    "priority": 2,
     "scope": ["GitHub Copilot", "Copilot app", "CLI", "IDE", "cloud agent"]
   },
   {
@@ -156,7 +156,7 @@
     "name": "Microsoft Copilot Blog RSS",
     "url": "https://www.microsoft.com/en-us/microsoft-copilot/blog/feed/",
     "type": "rss",
-    "priority": 2,
+    "priority": 1,
     "scope": ["consumer Copilot", "Windows", "Edge", "Microsoft 365"]
   },
   {
@@ -180,7 +180,7 @@
     "name": "Seedance Product Page",
     "url": "https://seed.bytedance.com/en/seedance2_5",
     "type": "product-docs",
-    "priority": 2,
+    "priority": 3,
     "scope": ["current Seedance model", "capabilities", "availability"]
   },
   {
@@ -188,7 +188,7 @@
     "name": "Kling AI Release Notes",
     "url": "https://app.klingai.com/global/release-notes",
     "type": "release-notes",
-    "priority": 1,
+    "priority": 2,
     "scope": ["Kling Video", "Kling Image", "product features"]
   },
   {
@@ -204,7 +204,7 @@
     "name": "Kling AI Product",
     "url": "https://app.klingai.com/global/",
     "type": "product-docs",
-    "priority": 2,
+    "priority": 3,
     "scope": ["current product", "models", "features"]
   }
 ]

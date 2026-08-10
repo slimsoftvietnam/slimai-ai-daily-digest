@@ -241,6 +241,8 @@ Sau khi bài blog được đăng và kiểm tra ảnh preview, skill có thể 
 
 Tin nhắn Zalo dùng văn bản thuần, không dùng Markdown hoặc HTML. Nội dung được chia thành các nhóm có emoji, mỗi ý chính nằm trên một dòng và không giới hạn cố định ở 500 ký tự hay 7 gạch đầu dòng. Nếu API có giới hạn kỹ thuật thực tế, skill sẽ chia thành nhiều phần; CTA và URL blog chỉ xuất hiện ở phần cuối.
 
+Thứ tự mặc định của bản tin là: **Góc nhìn chiến lược → Case study đã kiểm chứng → Tin chính thức từ hãng**. Với tin hãng, skill kiểm tra blog hoặc newsroom chính thức trước; release notes, changelog và tài liệu sản phẩm là nguồn bổ sung để xác minh chi tiết.
+
 Skill dùng `scripts/send-zalo.mjs` để bảo đảm trường `text` luôn là chuỗi thuần. Có thể kiểm tra trước mà không gửi tin:
 
 ```text

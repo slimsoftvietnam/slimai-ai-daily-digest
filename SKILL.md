@@ -1,6 +1,6 @@
 ---
 name: slimai-ai-daily-digest
-description: Create the SlimAI-branded daily AI briefing by discovering newly launched models and product features from official OpenAI, Claude, Gemini, Grok, Microsoft Copilot, Moonshot/Kimi, Seedance, and Kling sources first; adding strategic AI perspectives from McKinsey, Gartner, KPMG, and IBM; then ranking practical articles from curated RSS feeds. Use when the user asks for a SlimAI digest, AI daily digest, official AI product updates, Microsoft or GitHub Copilot updates, strategic AI insights, enterprise AI trends, model launch briefing, technology roundup, or invokes $slimai-ai-daily-digest. Supports configurable time window, article count, and output language, including Vietnamese.
+description: Create the SlimAI-branded daily AI briefing, presenting evidence-backed strategic AI perspectives first, verified case studies second, and official product updates third. Discover official updates from OpenAI, Claude, Gemini, Grok, Microsoft Copilot, Moonshot/Kimi, Seedance, and Kling with official blogs or newsrooms checked before release notes, changelogs, and documentation; add strategic perspectives from McKinsey, Gartner, KPMG, and IBM; then rank practical articles from curated RSS feeds. Use when the user asks for a SlimAI digest, AI daily digest, official AI product updates, Microsoft or GitHub Copilot updates, strategic AI insights, enterprise AI trends, model launch briefing, technology roundup, or invokes $slimai-ai-daily-digest. Supports configurable time window, article count, and output language, including Vietnamese.
 ---
 
 # SlimAI - AI Daily Digest
@@ -57,9 +57,14 @@ Validate the edited JSON, test a new RSS feed with `scripts/fetch-rss.mjs`, and 
 
 ## Workflow
 
-1. Read `references/official-sources.json`. Check official sources before community feeds for these platforms, in this order: OpenAI, Claude, Gemini, Grok, Microsoft Copilot, Moonshot/Kimi, Seedance, and Kling.
+1. Read `references/strategic-sources.json` and collect qualifying strategic perspectives before composing the digest.
 
-   - Open every priority-1 source relevant to the requested platforms.
+   - Follow the strategic-source validation rules below and keep only evidence-backed items that meet the score threshold.
+
+2. Read `references/official-sources.json`. Check these platforms: OpenAI, Claude, Gemini, Grok, Microsoft Copilot, Moonshot/Kimi, Seedance, and Kling.
+
+   - Within each platform, open official blogs, newsrooms, and their RSS feeds first. Then inspect release notes or changelogs, followed by product documentation only when the editorial sources do not establish the feature, rollout, availability, or technical detail.
+   - Open every priority-1 source relevant to the requested platforms before any priority-2 or priority-3 source.
    - Use direct official URLs first. If a page blocks automated access, use web search restricted to that exact official domain.
    - Inspect priority-2 sources when priority-1 sources are unavailable, ambiguous, or do not cover both the consumer product and developer API.
    - Extract the release date, feature/model name, availability or rollout status, and the official source URL.
@@ -68,7 +73,7 @@ Validate the edited JSON, test a new RSS feed with `scripts/fetch-rss.mjs`, and 
    - Search the default seven-day official-release window. When the user explicitly asks for the latest state of every platform, report the newest official entry for each platform even when it is older, and show its date.
    - Never describe a third-party report as an official launch. If no official confirmation exists, label it `Chưa xác nhận từ nguồn hãng` and keep it out of the official-launch section.
 
-2. Read `references/strategic-sources.json` after checking official product releases and before ranking community feeds.
+3. Apply these rules while reading `references/strategic-sources.json`:
 
    - Open every priority-1 strategic source and use priority-2 sources for coverage gaps.
    - Search the default 30-day window. These sources do not need RSS. Follow each source's `accessMode` in `references/strategic-sources.json`.
@@ -83,7 +88,7 @@ Validate the edited JSON, test a new RSS feed with `scripts/fetch-rss.mjs`, and 
    - Add qualifying items to a separate `Strategic AI Insight` section instead of presenting them as product launches.
    - Publish the exact research article, press release, report landing page, or public abstract URL. Do not substitute the organization's homepage, insights hub, newsroom index, or search-results page.
 
-3. Locate this skill's directory and run its bundled RSS fetcher with absolute, quoted paths:
+4. Locate this skill's directory and run its bundled RSS fetcher with absolute, quoted paths:
 
    ```text
    node <skill-dir>/scripts/fetch-rss.mjs --hours <hours> --sources <skill-dir>/references/sources.json
@@ -95,16 +100,16 @@ Validate the edited JSON, test a new RSS feed with `scripts/fetch-rss.mjs`, and 
 
    Consider a feed unhealthy when it returns a permanent HTTP error such as 404 or 410, produces invalid feed data, or fails on three consecutive runs. Report transient failures without automatically treating the publisher as untrustworthy.
 
-4. If Node.js is unavailable, use the available web or browser tools to read a manageable subset of the RSS URLs in `references/sources.json`. State that coverage is partial. Do not claim all sources were checked.
+5. If Node.js is unavailable, use the available web or browser tools to read a manageable subset of the RSS URLs in `references/sources.json`. State that coverage is partial. Do not claim all sources were checked.
 
-5. Validate every candidate before ranking:
+6. Validate every candidate before ranking:
 
    - Require a title, an HTTP(S) link, a source, and a parseable publication date inside the requested window.
    - Deduplicate identical links and near-identical titles.
    - Treat RSS summaries as excerpts, not independent verification.
    - Resolve redirects and verify that the final URL opens the exact article being summarized. Reject or replace links that land on a homepage, section index, generic changelog, search page, or unrelated article.
 
-6. Keep a candidate only when it clearly belongs to at least one of these priority groups:
+7. Keep a candidate only when it clearly belongs to at least one of these priority groups:
 
    1. `Major AI Update`: a major model release or a meaningful new capability from an AI platform. Include material API, pricing, availability, deprecation, safety, or product changes. Exclude cosmetic updates and routine company news.
    2. `Verified AI Case Study`: a real-world AI deployment with a named organization or practitioner, a specific workflow, and attributable evidence such as measured results, implementation details, reproducible artifacts, or independently checkable outcomes. Treat unsupported vendor claims and anonymous success stories as unverified and exclude them.
@@ -112,7 +117,7 @@ Validate the edited JSON, test a new RSS feed with `scripts/fetch-rss.mjs`, and 
    4. `Practical AI Guide`: a trustworthy community tutorial for a specific use case, with concrete steps, examples, prompts, code, or validation guidance that a reader can apply. Exclude generic prompt lists, vague opinion posts, and SEO listicles.
    5. `Strategic AI Insight`: evidence-backed guidance about enterprise adoption, operating models, governance, investment, workforce, industry transformation, or measurable AI value. Require an original survey, named case study, public methodology, quantitative evidence, or a clearly attributable analyst framework. Exclude generic consulting promotion.
 
-7. Score every eligible candidate out of 100:
+8. Score every eligible candidate out of 100:
 
    - Priority-group value, 0-40: `Major AI Update` 40; `Verified AI Case Study` 35; `Strategic AI Insight` 30; `Notable Open Source` 30; `Practical AI Guide` 25. Use the highest matching group and add at most 5 bonus points when the article substantively fits another group, without exceeding 40.
    - Trust and evidence, 0-25: reward official or primary sources, named participants, direct measurements, implementation details, repository evidence, and reproducible examples. Give little or no credit to unattributed summaries and aggregator rewrites.
@@ -120,11 +125,11 @@ Validate the edited JSON, test a new RSS feed with `scripts/fetch-rss.mjs`, and 
    - Timeliness, 0-10: prefer developments inside the requested window and genuinely new information over recycled coverage.
    - Originality, 0-5: prefer original reporting, first-hand experience, source code, experiments, or analysis over restatements.
 
-   Select only candidates scoring at least 60. Rank by total score, using trust and evidence as the first tie-breaker and practical usefulness as the second. A verified major official release should normally lead the digest. Select up to 15 distinct qualifying community articles by default; official releases and strategic insights are separate and do not consume those 15 slots. Do not fill the requested article count with weak items below the threshold. Avoid multiple articles about the same event and normally select no more than two community articles from one source.
+   Select only candidates scoring at least 60. Rank within each section by total score, using trust and evidence as the first tie-breaker and practical usefulness as the second. Preserve the editorial section order: strategic insights first, verified case studies second, and official product updates third, regardless of the global score order. Select up to 15 distinct qualifying community articles by default; official releases and strategic insights are separate and do not consume those 15 slots. Do not fill the requested article count with weak items below the threshold. Avoid multiple articles about the same event and normally select no more than two community articles from one source.
 
-8. Classify selected items as `Major AI Update`, `Verified AI Case Study`, `Strategic AI Insight`, `Notable Open Source`, or `Practical AI Guide`. When an item fits multiple groups, assign one primary category and optionally show one secondary category.
+9. Classify selected items as `Major AI Update`, `Verified AI Case Study`, `Strategic AI Insight`, `Notable Open Source`, or `Practical AI Guide`. When an item fits multiple groups, assign one primary category and optionally show one secondary category.
 
-9. For each selected article:
+10. For each selected article:
 
    - Use a sufficiently detailed RSS summary as the initial evidence.
    - When the summary is missing, vague, or under roughly 100 characters, open the article with an available web/browser tool.
@@ -136,9 +141,9 @@ Validate the edited JSON, test a new RSS feed with `scripts/fetch-rss.mjs`, and 
    - Add two or three specific topic tags.
    - Do not invent facts that are absent from the source.
 
-10. Identify two or three trends supported by multiple selected articles. Label a trend as an inference when the sources do not state it directly.
+11. Identify two or three trends supported by multiple selected articles. Label a trend as an inference when the sources do not state it directly.
 
-11. Aim to return 15 qualifying community articles. If the default 24-hour RSS window yields fewer than 15 after scoring and deduplication, retry with 48 hours and then, only if still necessary, with seven days. Disclose the final expanded window. Never lower the 60-point threshold merely to reach 15. Do not expand a window the user explicitly specified. If fewer than 15 qualifying articles remain after the allowed expansion, report the actual count and explain the shortfall. Do not hide an official release merely because the community RSS window is sparse.
+12. Aim to return 15 qualifying community articles. If the default 24-hour RSS window yields fewer than 15 after scoring and deduplication, retry with 48 hours and then, only if still necessary, with seven days. Disclose the final expanded window. Never lower the 60-point threshold merely to reach 15. Do not expand a window the user explicitly specified. If fewer than 15 qualifying articles remain after the allowed expansion, report the actual count and explain the shortfall. Do not hide an official release merely because the community RSS window is sparse.
 
 ## Output
 
@@ -151,10 +156,10 @@ When the user requests a blog article:
 - Build the URL slug from the primary SEO keyword and its specific new capability, for example `gpt-live-hoi-thoai-ai-lien-tuc`. Keep it short, lowercase, ASCII, hyphen-separated, and stable after publication. Do not use a generic date-only or `ban-tin-cong-nghe` slug when a named product or feature provides clearer search intent. Before publishing, check for collisions and add the date only when needed for uniqueness. Never change an already-published slug automatically; use a permanent redirect when the user explicitly approves a URL migration.
 - Do not display selection scores, score labels, or internal categories such as `Major AI Update` and `Verified AI Case Study` in public blog copy. Keep scoring internal for ranking.
 - Start with a two-paragraph answer-first introduction, followed by `Tóm tắt nhanh` with four to six bullets.
-- Number every major H2 section in reading order, for example `1. Tóm tắt nhanh`, `2. Cập nhật chính thức`, `3. Góc nhìn chiến lược`. Keep H3 subsections unnumbered unless a section is procedural.
+- Number every major H2 section in reading order. Use this default sequence: `1. Tóm tắt nhanh`, `2. Góc nhìn chiến lược`, `3. Case study AI đã kiểm chứng`, `4. Cập nhật chính thức từ hãng`, followed by open-source projects, practical guides, recommended actions, and the conclusion when those sections have qualifying content. Keep H3 subsections unnumbered unless a section is procedural.
 - Use descriptive headings, paragraphs of two or three sentences, and bullets for steps, changes, or takeaways. Avoid repeating the same facts in the introduction, body, trends, and conclusion.
 - Use a compact Markdown table when several items share the same fields, especially the quick summary or strategic-source comparison. Keep cells short for mobile readability. Do not force long explanations, code, or single-item sections into tables.
-- Place `Góc nhìn chiến lược` after official product updates and before case studies or community tools. Include McKinsey, Gartner, KPMG, and IBM when qualifying research is available; show the date, evidence, management implication, and limitation.
+- Place `Góc nhìn chiến lược` before case studies and official product updates. Include McKinsey, Gartner, KPMG, and IBM when qualifying research is available; show the date, evidence, management implication, and limitation. Place verified case studies immediately after this section, then place official product updates after the case studies.
 - End with three to five practical actions and a concise conclusion. Do not include a public `Phương pháp biên tập của SlimAI` section unless the user explicitly requests it. Add a FAQ only when it answers genuine long-tail questions not already answered clearly.
 - Keep every source link on the exact article or report URL. Use internal links where relevant, but do not overload the article.
 
@@ -162,17 +167,23 @@ When the user requests a blog article:
 
 Use compact Markdown suitable for chat or Telegram:
 
-Include a `Strategic AI Perspective` section after official product launches. For each selected McKinsey, Gartner, KPMG, or IBM item, show the publication date, evidence type, main finding, management implication, and a caveat about methodology, sponsorship, forecast uncertainty, or paywall limits when relevant.
+Lead with a `Strategic AI Perspective` section, followed by verified case studies, then official product launches. For each selected McKinsey, Gartner, KPMG, or IBM item, show the publication date, evidence type, main finding, management implication, and a caveat about methodology, sponsorship, forecast uncertainty, or paywall limits when relevant.
 
 ```text
 📰 AI & Tech Daily Digest — {date}
 Nguồn hãng: {official sources checked} · RSS cộng đồng: {successful/configured feeds} nguồn phản hồi
 
+📊 Góc nhìn chiến lược
+- **{organization}** — [{research title}]({exact report URL}) · {publication date}
+  {evidence, management implication, and limitation}
+
+🏢 Case study AI đã kiểm chứng
+- **{organization}** — [{case study title}]({exact source URL})
+  {workflow, measured evidence, and practical lesson}
+
 🚀 Tính năng và model mới từ hãng
 - **{platform}** — [{feature or model}]({official URL}) · {release date} · {availability}
   {what changed and why it matters}
-
-Nếu một nền tảng không có cập nhật trong 7 ngày, ghi ngắn gọn: `{platform}: Không có bản phát hành chính thức mới trong 7 ngày qua.`
 
 🧭 Xu hướng chính
 - {trend supported by selected articles}
@@ -202,25 +213,21 @@ BẢN TIN SLIMAI NGÀY DD/MM
 
 Chủ đề nổi bật: {most important verified story}
 
-🎙️ AI giọng nói và mô hình mới
-
-• {one complete key point on one line}
-• {one complete key point on one line}
-
-🤖 Công cụ AI Agent và lập trình
-
-• {one complete key point on one line}
-
-⚠️ Cập nhật dịch vụ
-
-• {one complete key point on one line}
-
 📊 Nghiên cứu và xu hướng doanh nghiệp
 
 • Gartner: {finding and management implication}
 • McKinsey: {finding and management implication}
 • KPMG: {finding and management implication}
 • IBM: {finding and management implication}
+
+🏢 Case study AI đã kiểm chứng
+
+• {named organization, applied workflow, measured result, and practical lesson}
+
+🚀 Tin và cập nhật chính thức từ hãng
+
+• {platform}: {model, feature, availability, and practical impact}
+• {platform}: {model, feature, availability, and practical impact}
 
 🎓 Đào tạo AI
 
