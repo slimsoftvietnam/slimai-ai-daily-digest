@@ -1,221 +1,197 @@
 #!/usr/bin/env node
-/**
- * fetch-rss.mjs — Concurrent RSS/Atom feed fetcher & parser
- * Zero dependencies, runs on Node.js 18+
- * 
- * Usage: node fetch-rss.mjs [--hours 24] [--sources sources.json]
- * Output: JSON array of articles to stdout
- */
+/** Concurrent zero-dependency RSS/Atom fetcher for Node.js 18+. */
+import { readFile } from "node:fs/promises";
+import { dirname, resolve } from "node:path";
+import process from "node:process";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { readState, writeStateAtomic } from "./lib/state-store.mjs";
+import { canonicalizeUrl, dedupeArticles } from "./lib/url.mjs";
 
-import { readFileSync } from 'fs';
-import { resolve, dirname } from 'path';
-import { fileURLToPath } from 'url';
+const scriptDir = dirname(fileURLToPath(import.meta.url));
+const MAX_FEED_BYTES = 5 * 1024 * 1024;
+const USER_AGENT = "SlimAI-Daily-Digest/2.0 (+https://github.com/slimsoftvietnam/slimai-ai-daily-digest)";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-// --- Config ---
-const args = process.argv.slice(2);
-const hoursArg = args.includes('--hours') ? parseInt(args[args.indexOf('--hours') + 1], 10) : 24;
-const sourcesArg = args.includes('--sources') ? args[args.indexOf('--sources') + 1] : resolve(__dirname, '../references/sources.json');
-const concurrency = args.includes('--concurrency') ? parseInt(args[args.indexOf('--concurrency') + 1], 10) : 15;
-const timeoutMs = args.includes('--timeout-ms') ? parseInt(args[args.indexOf('--timeout-ms') + 1], 10) : 15000;
-const maxFeedBytes = 5 * 1024 * 1024;
-
-function exitWithUsageError(message) {
-  process.stderr.write(`[fetch-rss] Fatal: ${message}\n`);
-  process.exit(1);
-}
-
-if (!Number.isInteger(hoursArg) || hoursArg < 1 || hoursArg > 720) {
-  exitWithUsageError('--hours must be an integer from 1 to 720');
-}
-if (!Number.isInteger(concurrency) || concurrency < 1 || concurrency > 30) {
-  exitWithUsageError('--concurrency must be an integer from 1 to 30');
-}
-if (!Number.isInteger(timeoutMs) || timeoutMs < 1000 || timeoutMs > 60000) {
-  exitWithUsageError('--timeout-ms must be an integer from 1000 to 60000');
-}
-
-const cutoff = Date.now() - hoursArg * 3600 * 1000;
-
-// --- Load sources ---
-const sources = JSON.parse(readFileSync(sourcesArg, 'utf-8'));
-
-// --- XML helpers (zero-dependency) ---
-function extractTag(xml, tag) {
-  const patterns = [
-    new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, 'i'),
-    new RegExp(`<${tag}[^>]*/>`, 'i'),
-  ];
-  const m = xml.match(patterns[0]);
-  return m ? m[1].trim() : '';
+export function extractTag(xml, tag) {
+  const match = xml.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, "i"));
+  return match ? match[1].trim() : "";
 }
 
 function extractAllBlocks(xml, tag) {
-  const re = new RegExp(`<${tag}[\\s\\S]*?</${tag}>`, 'gi');
-  return xml.match(re) || [];
-}
-
-function extractLink(block, baseUrl) {
-  // Atom: <link href="..." rel="alternate"/>
-  const atomLink = block.match(/<link[^>]+href=["']([^"']+)["'][^>]*rel=["']alternate["']/i)
-    || block.match(/<link[^>]+rel=["']alternate["'][^>]*href=["']([^"']+)["']/i)
-    || block.match(/<link[^>]+href=["']([^"']+)["'][^>]*/i);
-  if (atomLink) return resolveHttpUrl(atomLink[1], baseUrl);
-  // RSS: <link>...</link>
-  const rssLink = block.match(/<link>([^<]+)<\/link>/i);
-  return rssLink ? resolveHttpUrl(rssLink[1].trim(), baseUrl) : '';
+  return xml.match(new RegExp(`<${tag}[\\s\\S]*?</${tag}>`, "gi")) || [];
 }
 
 function resolveHttpUrl(value, baseUrl) {
   try {
     const url = new URL(value, baseUrl);
-    return url.protocol === 'http:' || url.protocol === 'https:' ? url.href : '';
+    return canonicalizeUrl(url.href);
   } catch {
-    return '';
+    return "";
   }
 }
 
-function decodeEntities(str) {
-  return str
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
+function extractLink(block, baseUrl) {
+  const atom = block.match(/<link[^>]+href=["']([^"']+)["'][^>]*rel=["']alternate["']/i)
+    || block.match(/<link[^>]+rel=["']alternate["'][^>]*href=["']([^"']+)["']/i)
+    || block.match(/<link[^>]+href=["']([^"']+)["'][^>]*/i);
+  if (atom) return resolveHttpUrl(atom[1], baseUrl);
+  const rss = block.match(/<link>([\s\S]*?)<\/link>/i);
+  return rss ? resolveHttpUrl(rss[1].trim(), baseUrl) : "";
+}
+
+function decodeEntities(value) {
+  return String(value ?? "")
+    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
-    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
-    .replace(/&#([0-9]+);/g, (_, decimal) => String.fromCodePoint(parseInt(decimal, 10)))
-    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1')
-    .replace(/<[^>]+>/g, '')
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(Number.parseInt(hex, 16)))
+    .replace(/&#([0-9]+);/g, (_, decimal) => String.fromCodePoint(Number.parseInt(decimal, 10)))
+    .replace(/<[^>]+>/g, "")
     .trim();
 }
 
-function parseDate(dateStr) {
-  if (!dateStr) return 0;
-  const d = new Date(dateStr);
-  return isNaN(d.getTime()) ? 0 : d.getTime();
-}
-
-// --- Parse a single feed ---
-function parseFeed(xml, source) {
-  const articles = [];
-  
-  // Try Atom entries first
-  let entries = extractAllBlocks(xml, 'entry');
-  let format = 'atom';
-  
-  // Fallback to RSS items
+export function parseFeed(xml, source, cutoffMs = 0) {
+  if (typeof xml !== "string" || !/<(?:rss|feed|rdf:RDF)\b/i.test(xml)) {
+    throw new Error("Invalid RSS/Atom document");
+  }
+  let entries = extractAllBlocks(xml, "entry");
+  let format = "atom";
   if (entries.length === 0) {
-    entries = extractAllBlocks(xml, 'item');
-    format = 'rss';
+    entries = extractAllBlocks(xml, "item");
+    format = "rss";
   }
-  
+  const articles = [];
   for (const entry of entries) {
-    const title = decodeEntities(extractTag(entry, 'title'));
+    const title = decodeEntities(extractTag(entry, "title"));
     const link = extractLink(entry, source.xmlUrl);
-    const pubDate = extractTag(entry, format === 'atom' ? 'published' : 'pubDate')
-      || extractTag(entry, 'updated')
-      || extractTag(entry, 'dc:date');
-    const summary = decodeEntities(
-      extractTag(entry, 'summary') || extractTag(entry, 'description') || ''
-    ).slice(0, 500);
-    
-    const timestamp = parseDate(pubDate);
-    
-    if (title && link && timestamp >= cutoff) {
-      articles.push({
-        title,
-        link,
-        summary,
-        timestamp,
-        date: new Date(timestamp).toISOString(),
-        source: source.name,
-        sourceUrl: source.htmlUrl,
-      });
-    }
+    const published = extractTag(entry, format === "atom" ? "published" : "pubDate")
+      || extractTag(entry, "updated")
+      || extractTag(entry, "dc:date");
+    const timestamp = Date.parse(decodeEntities(published));
+    if (!title || !link || !Number.isFinite(timestamp) || timestamp < cutoffMs) continue;
+    articles.push({
+      title,
+      link,
+      summary: decodeEntities(extractTag(entry, "summary") || extractTag(entry, "description")).slice(0, 500),
+      timestamp,
+      date: new Date(timestamp).toISOString(),
+      source: source.name,
+      sourceUrl: canonicalizeUrl(source.htmlUrl),
+    });
   }
-  
   return articles;
 }
 
-// --- Concurrent fetcher with pool ---
-async function fetchWithTimeout(url, ms) {
-  const parsedUrl = new URL(url);
-  if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
-    throw new Error(`Unsupported URL protocol: ${parsedUrl.protocol}`);
-  }
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), ms);
-  try {
-    const res = await fetch(url, {
-      signal: controller.signal,
-      headers: { 'User-Agent': 'AIDailyDigest-Codex/1.0 (+https://github.com/HarrisHan/ai-daily-digest)' },
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const contentLength = Number(res.headers.get('content-length'));
-    if (Number.isFinite(contentLength) && contentLength > maxFeedBytes) {
-      throw new Error(`Feed exceeds ${maxFeedBytes} bytes`);
-    }
-    const body = await res.text();
-    if (Buffer.byteLength(body, 'utf8') > maxFeedBytes) {
-      throw new Error(`Feed exceeds ${maxFeedBytes} bytes`);
-    }
-    return body;
-  } finally {
-    clearTimeout(timer);
-  }
+function sleep(ms) {
+  return new Promise((resolvePromise) => setTimeout(resolvePromise, ms));
 }
 
-async function pool(tasks, concurrencyLimit) {
-  const results = [];
-  let index = 0;
-  
-  async function worker() {
-    while (index < tasks.length) {
-      const i = index++;
-      results[i] = await tasks[i]();
+export async function fetchFeed(url, { timeoutMs = 15000, retries = 2, fetchImpl = fetch } = {}) {
+  const parsed = new URL(url);
+  if (!["http:", "https:"].includes(parsed.protocol)) throw new Error(`Unsupported URL protocol: ${parsed.protocol}`);
+  let lastError;
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const response = await fetchImpl(url, { signal: controller.signal, headers: { "User-Agent": USER_AGENT } });
+      if (!response.ok) {
+        const error = new Error(`HTTP ${response.status}`);
+        error.permanent = response.status === 404 || response.status === 410;
+        throw error;
+      }
+      const declared = Number(response.headers.get("content-length"));
+      if (Number.isFinite(declared) && declared > MAX_FEED_BYTES) throw new Error("Feed exceeds size limit");
+      const body = await response.text();
+      if (Buffer.byteLength(body, "utf8") > MAX_FEED_BYTES) throw new Error("Feed exceeds size limit");
+      return body;
+    } catch (error) {
+      lastError = error;
+      if (error.permanent || attempt === retries) break;
+      await sleep(250 * (attempt + 1));
+    } finally {
+      clearTimeout(timer);
     }
   }
-  
-  await Promise.all(Array.from({ length: Math.min(concurrencyLimit, tasks.length) }, () => worker()));
+  throw lastError;
+}
+
+async function pool(tasks, concurrency) {
+  const results = new Array(tasks.length);
+  let index = 0;
+  async function worker() {
+    while (index < tasks.length) {
+      const current = index++;
+      results[current] = await tasks[current]();
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(concurrency, tasks.length) }, worker));
   return results;
 }
 
-// --- Main ---
-async function main() {
-  const stats = { ok: 0, failed: 0, total: sources.length };
-  const allArticles = [];
-  
-  process.stderr.write(`[fetch-rss] Fetching ${sources.length} feeds (${hoursArg}h window, ${concurrency} concurrent)...\n`);
-  
-  const tasks = sources.map((source, i) => async () => {
+export async function collectFeeds(sources, options = {}) {
+  const cutoffMs = Date.now() - options.hours * 3600 * 1000;
+  const health = {};
+  const tasks = sources.map((source) => async () => {
     try {
-      const xml = await fetchWithTimeout(source.xmlUrl, timeoutMs);
-      const articles = parseFeed(xml, source);
-      allArticles.push(...articles);
-      stats.ok++;
-    } catch (err) {
-      stats.failed++;
-      process.stderr.write(`[fetch-rss] ✗ ${source.name}: ${err.message}\n`);
-    }
-    
-    if ((stats.ok + stats.failed) % 20 === 0) {
-      process.stderr.write(`[fetch-rss] Progress: ${stats.ok + stats.failed}/${stats.total} (${stats.ok} ok, ${stats.failed} failed)\n`);
+      const xml = await fetchFeed(source.xmlUrl, options);
+      const articles = parseFeed(xml, source, cutoffMs);
+      health[source.name] = { ok: true, articles: articles.length };
+      return articles;
+    } catch (error) {
+      health[source.name] = { ok: false, error: error.message, permanent: Boolean(error.permanent) };
+      return [];
     }
   });
-  
-  await pool(tasks, concurrency);
-  
-  // Sort by timestamp descending
-  allArticles.sort((a, b) => b.timestamp - a.timestamp);
-  
-  process.stderr.write(`[fetch-rss] Done: ${allArticles.length} articles from ${stats.ok} feeds (${stats.failed} failed)\n`);
-  
-  // Output JSON to stdout
-  process.stdout.write(JSON.stringify(allArticles, null, 2));
+  const nested = await pool(tasks, options.concurrency);
+  return { articles: dedupeArticles(nested.flat()).sort((a, b) => b.timestamp - a.timestamp), health };
 }
 
-main().catch(err => {
-  process.stderr.write(`[fetch-rss] Fatal: ${err.message}\n`);
-  process.exit(1);
-});
+function argValue(args, name, fallback) {
+  const index = args.indexOf(name);
+  return index >= 0 ? args[index + 1] : fallback;
+}
+
+export async function main(argv = process.argv.slice(2)) {
+  const hours = Number.parseInt(argValue(argv, "--hours", "24"), 10);
+  const concurrency = Number.parseInt(argValue(argv, "--concurrency", "15"), 10);
+  const timeoutMs = Number.parseInt(argValue(argv, "--timeout-ms", "15000"), 10);
+  const retries = Number.parseInt(argValue(argv, "--retries", "2"), 10);
+  const sourcesPath = resolve(argValue(argv, "--sources", resolve(scriptDir, "../references/sources.json")));
+  const statePath = argValue(argv, "--state", undefined);
+  if (!Number.isInteger(hours) || hours < 1 || hours > 720) throw new Error("--hours must be 1..720");
+  if (!Number.isInteger(concurrency) || concurrency < 1 || concurrency > 30) throw new Error("--concurrency must be 1..30");
+  if (!Number.isInteger(timeoutMs) || timeoutMs < 1000 || timeoutMs > 60000) throw new Error("--timeout-ms must be 1000..60000");
+  if (!Number.isInteger(retries) || retries < 0 || retries > 5) throw new Error("--retries must be 0..5");
+
+  const sources = JSON.parse(await readFile(sourcesPath, "utf8"));
+  process.stderr.write(`[fetch-rss] Fetching ${sources.length} feeds (${hours}h, ${concurrency} concurrent)\n`);
+  const result = await collectFeeds(sources, { hours, concurrency, timeoutMs, retries });
+  const failures = Object.entries(result.health).filter(([, item]) => !item.ok);
+  for (const [name, item] of failures) process.stderr.write(`[fetch-rss] failed ${name}: ${item.error}\n`);
+
+  if (statePath) {
+    const state = await readState(statePath);
+    for (const source of sources) {
+      const previous = state.sourceHealth[source.name] ?? { consecutiveFailures: 0 };
+      const current = result.health[source.name];
+      state.sourceHealth[source.name] = current.ok
+        ? { consecutiveFailures: 0, lastSuccessAt: new Date().toISOString(), articles: current.articles }
+        : { ...previous, consecutiveFailures: (previous.consecutiveFailures ?? 0) + 1, lastFailureAt: new Date().toISOString(), error: current.error, unhealthy: current.permanent || (previous.consecutiveFailures ?? 0) + 1 >= 3 };
+    }
+    await writeStateAtomic(statePath, state);
+  }
+
+  process.stderr.write(`[fetch-rss] Done: ${result.articles.length} unique articles; ${sources.length - failures.length} feeds ok; ${failures.length} failed\n`);
+  process.stdout.write(JSON.stringify(result.articles, null, 2));
+  return result;
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+  main().catch((error) => {
+    process.stderr.write(`[fetch-rss] Fatal: ${error.message}\n`);
+    process.exit(1);
+  });
+}

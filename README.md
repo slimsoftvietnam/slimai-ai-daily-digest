@@ -38,6 +38,53 @@ Bạn có thể nói thêm một trong các câu sau:
 
 Skill chỉ tạo nội dung trong chat. Việc gửi Telegram, email hoặc đăng blog chỉ được thực hiện khi bạn yêu cầu rõ ràng và cung cấp quyền truy cập phù hợp. Không đưa API key hoặc bot token vào repository công khai.
 
+## Luồng tự động mới
+
+Skill đã có sẵn một script điều phối để tránh phải ghép nhiều lệnh thủ công. Quy trình hàng ngày là:
+
+1. Thu thập RSS, chuẩn hóa URL và bỏ bài trùng.
+2. Codex đọc nguồn chính hãng/chiến lược, kiểm chứng, chấm điểm và viết bản thảo.
+3. Script kiểm tra bản thảo, đăng bài lên AIWeb và xác minh trang công khai cùng ảnh preview.
+4. Script chia bản tóm tắt Zalo khi cần, gửi từng phần theo thứ tự và lưu message ID.
+5. Chỉ sau khi hoàn tất, script mới đánh dấu các URL nguồn đã dùng.
+
+Người không rành kỹ thuật chỉ cần yêu cầu:
+
+```text
+Dùng $slimai-ai-daily-digest chạy toàn bộ luồng bản tin hôm nay.
+Đăng blog SlimAI, xác minh ảnh preview rồi gửi bản tóm tắt qua Zalo.
+Không gửi Telegram. Không hiển thị khóa bí mật.
+```
+
+Các biến môi trường cần có trên máy chạy Codex:
+
+| Biến | Mục đích |
+|---|---|
+| `SLIMAI_AIWEB_BASE_URL` | Địa chỉ website AIWeb, ví dụ `https://ai.slim.vn` |
+| `SLIMAI_AIWEB_API_KEY` | Khóa đăng và đọc lại bài blog |
+| `SLIMAI_ZALO_BOT_ENDPOINT` | Endpoint nhận tin nhắn Zalo Bot |
+| `SLIMAI_ZALO_BOT_API_KEY` | Khóa gửi Zalo Bot |
+| `SLIMAI_ZALO_MAX_CHARS` | Giới hạn kỹ thuật mỗi phần, có thể bỏ trống để dùng 1800 |
+
+Trạng thái chống trùng nằm tại `work/slimai-ai-daily-digest-state.json`, bên ngoài thư mục skill. Khi sao lưu hoặc chuyển máy, hãy giữ tệp này nếu muốn tiếp tục tránh dùng lại các URL cũ.
+
+### Mẫu lịch Codex ngắn gọn
+
+Prompt của lịch chỉ cần gọi skill và nêu cấu hình vận hành; không sao chép lại toàn bộ tiêu chí biên tập:
+
+```text
+Hằng ngày lúc 07:00 Asia/Saigon, dùng $slimai-ai-daily-digest chạy toàn bộ luồng
+với trạng thái tại work/slimai-ai-daily-digest-state.json.
+
+Dùng SLIMAI_AIWEB_BASE_URL, SLIMAI_AIWEB_API_KEY,
+SLIMAI_ZALO_BOT_ENDPOINT và SLIMAI_ZALO_BOT_API_KEY.
+Chỉ đăng khi có ít nhất một tin mới đạt chuẩn. Sau khi xác minh URL công khai và
+og:image, gửi tóm tắt Zalo. Tạm thời không gửi Telegram. Không hiển thị khóa bí mật.
+Báo URL blog, trạng thái og:image, số phần Zalo và message ID.
+```
+
+Nếu một lần gửi Zalo mất phản hồi, skill sẽ không tự gửi lại ngay vì server có thể đã nhận tin. Hãy kiểm tra group trước; Codex chỉ tiếp tục lần gửi chưa rõ trạng thái bằng cùng khóa chống trùng khi được xác nhận là phù hợp.
+
 ## Skill này làm được gì?
 
 - Tìm tính năng và model mới từ OpenAI, Claude, Gemini, Grok, Microsoft Copilot, Moonshot/Kimi, Seedance và Kling.

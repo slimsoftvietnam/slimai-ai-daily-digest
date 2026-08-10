@@ -1,0 +1,28 @@
+{
+  "publicUrl": "https://ai.slim.vn/blog/tu-khoa-tinh-nang-moi",
+  "post": {
+    "source_key": "2026-08-10-tu-khoa-tinh-nang-moi",
+    "slug": "tu-khoa-tinh-nang-moi",
+    "title": "Bản tin SlimAI ngày 10/08: Từ khóa tính năng mới",
+    "content": "<h2>1. Tóm tắt nhanh</h2><p>Nội dung.</p><h2>2. Góc nhìn chiến lược</h2><p>Nội dung.</p><h2>3. Case study AI đã kiểm chứng</h2><p>Nội dung.</p><h2>4. Cập nhật chính thức từ hãng</h2><p>Nội dung.</p>",
+    "seo_description": "Mô tả SEO ngắn gọn.",
+    "category_id": 28,
+    "language": "vi"
+  },
+  "assets": [
+    {
+      "id": "featured",
+      "file": "featured.jpg",
+      "sourceUrl": "https://example.com/source-article",
+      "featured": true
+    }
+  ],
+  "selectedUrls": [
+    "https://example.com/source-article"
+  ],
+  "requiredContent": [
+    "Tóm tắt nhanh"
+  ],
+  "zaloText": "BẢN TIN SLIMAI NGÀY 10/08\n\nChủ đề nổi bật: Từ khóa tính năng mới\n\n📊 Nghiên cứu và xu hướng doanh nghiệp\n• Một ý chính dễ hiểu.\n\n👉 Xem chi tiết kèm phân tích và đánh giá:\nhttps://ai.slim.vn/blog/tu-khoa-tinh-nang-moi"
+}
+
