@@ -1,334 +1,317 @@
 # SlimAI - AI Daily Digest
 
-Skill dành cho Codex giúp tạo bản tin AI tiếng Việt từ nguồn chính hãng, nghiên cứu chiến lược và cộng đồng công nghệ đáng tin cậy.
+Skill dành cho Codex giúp biến nhiều nguồn tin AI thành một quy trình xuất bản hoàn chỉnh. Người dùng không cần biết lập trình: chỉ cần cho Codex biết muốn theo dõi nguồn nào, kết nối website AIWeb và, nếu cần, kết nối Zalo Bot.
 
-Bạn không cần biết lập trình để cài đặt hoặc sử dụng.
+## Skill này làm gì?
 
-## Bắt đầu trong 3 bước
+Mỗi lần chạy, skill thực hiện lần lượt các công việc sau:
 
-### 1. Nhờ Codex cài skill
+1. **Tổng hợp nguồn tin:** đọc blog chính thức, nghiên cứu chiến lược, case study và nguồn cộng đồng đáng tin cậy.
+2. **Lưu cấu hình nguồn trong JSON:** phân loại nguồn thành chính hãng, chiến lược và cộng đồng để có thể bổ sung hoặc loại bỏ dễ dàng.
+3. **Lọc và biên tập bản tin:** bỏ bài trùng, bài cũ, nguồn lỗi hoặc nội dung yếu; sau đó viết bản tin tiếng Việt dễ hiểu.
+4. **Tạo ảnh bìa:** chuẩn bị ảnh đại diện 16:9 theo phong cách SlimAI, phù hợp để hiển thị trên blog và khi chia sẻ liên kết.
+5. **Đăng bài lên AIWeb:** tạo hoặc cập nhật bài blog, tải ảnh lên thư viện và kiểm tra URL công khai cùng ảnh preview.
+6. **Gửi vào Zalo group:** gửi bản tóm tắt dễ đọc qua Zalo Bot, kèm đường dẫn đến bài blog đầy đủ.
+7. **Chống đăng và gửi trùng:** lưu URL bài nguồn, URL blog và mã tin nhắn đã gửi vào tệp trạng thái.
 
-Sao chép và gửi câu này cho Codex:
+Thứ tự biên tập mặc định là: **góc nhìn chiến lược → case study đã kiểm chứng → tin chính thức từ hãng**. Với tin sản phẩm, skill ưu tiên blog hoặc newsroom chính thức trước release notes và các nguồn bổ sung khác.
 
-```text
-Hãy cài skill slimai-ai-daily-digest từ
-https://github.com/slimsoftvietnam/slimai-ai-daily-digest
-```
+## Bạn cần chuẩn bị gì?
 
-Khi Codex báo cài xong, hãy mở một task mới.
+| Nội dung | Bắt buộc | Bạn cần cung cấp |
+|---|---:|---|
+| Danh sách nguồn tin | Có | Tên hãng, tổ chức, website hoặc chủ đề muốn theo dõi |
+| Góc nhìn cần thu thập | Có | Ví dụ: chiến lược, quản trị, marketing, năng suất, nhân sự |
+| Website AIWeb | Khi muốn đăng blog | Địa chỉ website và API key AIWeb |
+| Zalo Bot | Khi muốn gửi vào group | Endpoint, API key và group đã kết nối với bot |
+| Lịch tự động | Không bắt buộc | Giờ chạy và múi giờ, ví dụ `07:00 Asia/Saigon` |
 
-### 2. Tạo bản tin
+Không đưa API key, mật khẩu, cookie hoặc bot token vào GitHub hay bất kỳ tệp JSON nào của skill.
 
-Gửi câu lệnh sau:
+## Bước 1: Cài skill vào Codex
 
-```text
-Dùng $slimai-ai-daily-digest tạo bản tin AI hôm nay bằng tiếng Việt.
-```
-
-Skill sẽ tự tìm nguồn chính hãng, góc nhìn chiến lược và nội dung cộng đồng đáng tin cậy; bạn không cần chỉnh RSS, JSON hay mã nguồn.
-
-### 3. Chọn định dạng bạn muốn
-
-Bạn có thể nói thêm một trong các câu sau:
-
-- `Trình bày thành bài đăng Telegram dễ đọc.`
-- `Viết thành bài blog chuẩn SEO, không hiện điểm số.`
-- `Viết thành email bản tin có tiêu đề và phần kêu gọi hành động.`
-- `Tóm tắt ngắn để đăng fanpage.`
-
-Skill chỉ tạo nội dung trong chat. Việc gửi Telegram, email hoặc đăng blog chỉ được thực hiện khi bạn yêu cầu rõ ràng và cung cấp quyền truy cập phù hợp. Không đưa API key hoặc bot token vào repository công khai.
-
-## Luồng tự động mới
-
-Skill đã có sẵn một script điều phối để tránh phải ghép nhiều lệnh thủ công. Quy trình hàng ngày là:
-
-1. Thu thập RSS, chuẩn hóa URL và bỏ bài trùng.
-2. Codex đọc nguồn chính hãng/chiến lược, kiểm chứng, chấm điểm và viết bản thảo.
-3. Script kiểm tra bản thảo, đăng bài lên AIWeb và xác minh trang công khai cùng ảnh preview.
-4. Script chia bản tóm tắt Zalo khi cần, gửi từng phần theo thứ tự và lưu message ID.
-5. Chỉ sau khi hoàn tất, script mới đánh dấu các URL nguồn đã dùng.
-
-Người không rành kỹ thuật chỉ cần yêu cầu:
+Cách đơn giản nhất là gửi cho Codex:
 
 ```text
-Dùng $slimai-ai-daily-digest chạy toàn bộ luồng bản tin hôm nay.
-Đăng blog SlimAI, xác minh ảnh preview rồi gửi bản tóm tắt qua Zalo.
-Không gửi Telegram. Không hiển thị khóa bí mật.
-```
-
-Các biến môi trường cần có trên máy chạy Codex:
-
-| Biến | Mục đích |
-|---|---|
-| `SLIMAI_AIWEB_BASE_URL` | Địa chỉ website AIWeb, ví dụ `https://ai.slim.vn` |
-| `SLIMAI_AIWEB_API_KEY` | Khóa đăng và đọc lại bài blog |
-| `SLIMAI_ZALO_BOT_ENDPOINT` | Endpoint nhận tin nhắn Zalo Bot |
-| `SLIMAI_ZALO_BOT_API_KEY` | Khóa gửi Zalo Bot |
-| `SLIMAI_ZALO_MAX_CHARS` | Giới hạn kỹ thuật mỗi phần, có thể bỏ trống để dùng 1800 |
-
-Trạng thái chống trùng nằm tại `work/slimai-ai-daily-digest-state.json`, bên ngoài thư mục skill. Khi sao lưu hoặc chuyển máy, hãy giữ tệp này nếu muốn tiếp tục tránh dùng lại các URL cũ.
-
-### Mẫu lịch Codex ngắn gọn
-
-Prompt của lịch chỉ cần gọi skill và nêu cấu hình vận hành; không sao chép lại toàn bộ tiêu chí biên tập:
-
-```text
-Hằng ngày lúc 07:00 Asia/Saigon, dùng $slimai-ai-daily-digest chạy toàn bộ luồng
-với trạng thái tại work/slimai-ai-daily-digest-state.json.
-
-Dùng SLIMAI_AIWEB_BASE_URL, SLIMAI_AIWEB_API_KEY,
-SLIMAI_ZALO_BOT_ENDPOINT và SLIMAI_ZALO_BOT_API_KEY.
-Chỉ đăng khi có ít nhất một tin mới đạt chuẩn. Sau khi xác minh URL công khai và
-og:image, gửi tóm tắt Zalo. Tạm thời không gửi Telegram. Không hiển thị khóa bí mật.
-Báo URL blog, trạng thái og:image, số phần Zalo và message ID.
-```
-
-Nếu một lần gửi Zalo mất phản hồi, skill sẽ không tự gửi lại ngay vì server có thể đã nhận tin. Hãy kiểm tra group trước; Codex chỉ tiếp tục lần gửi chưa rõ trạng thái bằng cùng khóa chống trùng khi được xác nhận là phù hợp.
-
-## Skill này làm được gì?
-
-- Tìm tính năng và model mới từ OpenAI, Claude, Gemini, Grok, Microsoft Copilot, Moonshot/Kimi, Mistral AI, Meta AI, NVIDIA, AWS AI, Seedance và Kling.
-- Bổ sung góc nhìn chiến lược từ McKinsey, Gartner, KPMG, IBM và Stanford HAI.
-- Theo dõi dự án và hướng dẫn mã nguồn mở nổi bật từ Hugging Face nhưng vẫn lọc theo tác giả, bằng chứng, repository và giấy phép.
-- Chọn tối đa 15 bài cộng đồng đạt ít nhất 60/100 điểm.
-- Loại bài trùng, bài quảng cáo, nguồn không rõ ràng và bài thiếu bằng chứng.
-- Dẫn liên kết thẳng đến đúng bài viết nguồn.
-- Viết kết quả bằng tiếng Việt, phù hợp để biên tập cho fanpage, email hoặc Telegram.
-
-## Cách cài đặt dễ nhất
-
-### Cách 1: Nhờ Codex cài giúp
-
-Mở Codex và gửi yêu cầu sau:
-
-```text
-Hãy cài skill slimai-ai-daily-digest từ repository
+Hãy cài skill slimai-ai-daily-digest từ repository:
 https://github.com/slimsoftvietnam/slimai-ai-daily-digest
 Skill nằm ở thư mục gốc của repository.
 ```
 
-Sau khi Codex báo cài đặt thành công, hãy mở một task mới để sử dụng skill.
-
-### Cách 2: Cài bằng file ZIP trên Windows
-
-1. Mở trang [Releases](https://github.com/slimsoftvietnam/slimai-ai-daily-digest/releases/latest).
-2. Tải file `slimai-ai-daily-digest-codex.zip`.
-3. Nhấp chuột phải vào file ZIP và chọn **Extract All**.
-4. Sao chép thư mục `slimai-ai-daily-digest` vừa giải nén.
-5. Dán thư mục đó vào:
-
-   ```text
-   C:\Users\TEN-CUA-BAN\.codex\skills\
-   ```
-
-6. Đóng rồi mở lại Codex, hoặc mở một task mới.
-
-Lưu ý: thư mục cuối cùng phải có dạng:
+Sau khi Codex báo cài xong, mở một task mới và kiểm tra bằng câu lệnh:
 
 ```text
-C:\Users\TEN-CUA-BAN\.codex\skills\slimai-ai-daily-digest\SKILL.md
+Dùng $slimai-ai-daily-digest và cho tôi biết skill đã sẵn sàng chưa.
 ```
 
-Không để thêm một lớp thư mục lồng bên ngoài.
-
-## Cách sử dụng
-
-Yêu cầu cơ bản:
+Bạn cũng có thể tải file ZIP tại trang [Releases](https://github.com/slimsoftvietnam/slimai-ai-daily-digest/releases/latest), giải nén vào thư mục dưới đây rồi mở lại Codex:
 
 ```text
-Sử dụng $slimai-ai-daily-digest để tạo bản tin AI hôm nay bằng tiếng Việt.
+C:\Users\TEN-CUA-BAN\.codex\skills\slimai-ai-daily-digest\
 ```
 
-Một số yêu cầu mẫu:
+Tệp `SKILL.md` phải nằm ngay trong thư mục trên, không nằm trong một lớp thư mục lồng thêm.
+
+## Bước 2: Liệt kê nguồn tin và góc nhìn muốn thu thập
+
+Bạn không cần tự sửa JSON. Hãy mô tả bằng ngôn ngữ thông thường, Codex sẽ kiểm tra URL, phân loại và cập nhật đúng tệp.
+
+Mẫu yêu cầu đầy đủ:
 
 ```text
-Dùng $slimai-ai-daily-digest, lấy tin trong 48 giờ gần nhất.
+Dùng $slimai-ai-daily-digest và cấu hình nguồn cho tôi.
+
+Nguồn chính hãng cần ưu tiên:
+- OpenAI
+- Anthropic/Claude
+- Google Gemini/DeepMind
+- Microsoft Copilot và GitHub Copilot
+
+Nguồn góc nhìn chiến lược:
+- McKinsey
+- Gartner
+- KPMG
+- IBM
+
+Chủ đề tôi quan tâm:
+- AI ứng dụng cho doanh nghiệp
+- Case study có số liệu hoặc kết quả đã kiểm chứng
+- Công cụ và dự án mã nguồn mở đáng chú ý
+
+Hãy tìm website chính thức, RSS nếu có, kiểm tra nguồn hoạt động rồi mới thêm.
+Không thêm trang tổng hợp, nguồn ẩn danh hoặc nguồn chủ yếu đăng quảng cáo.
 ```
 
-```text
-Dùng $slimai-ai-daily-digest và trình bày thành bài đăng Telegram dễ đọc.
-```
+Skill lưu nguồn ở ba tệp:
 
-```text
-Dùng $slimai-ai-daily-digest, ưu tiên cập nhật OpenAI, Claude và Gemini.
-```
-
-```text
-Dùng $slimai-ai-daily-digest để viết bản email có tiêu đề, preheader và phần gợi ý hành động.
-```
-
-```text
-Dùng $slimai-ai-daily-digest để viết bài blog dễ đọc, lấy tin nổi bật nhất làm từ khóa SEO chính và không hiển thị điểm số.
-```
-
-## Cách đọc kết quả
-
-Bản tin gồm các phần chính:
-
-1. **Tóm tắt nhanh:** ba ý quan trọng nhất.
-2. **Cập nhật từ hãng:** tính năng, model, API, giá hoặc thay đổi sản phẩm.
-3. **Góc nhìn chiến lược:** nghiên cứu và khuyến nghị từ McKinsey, Gartner, KPMG và IBM.
-4. **Bài cộng đồng:** tối đa 15 bài đã được chấm điểm và lọc chất lượng.
-5. **Gợi ý áp dụng:** việc đội kỹ thuật, marketing hoặc quản lý có thể làm tiếp theo.
-
-Mỗi bài cộng đồng phải đạt tối thiểu `60/100`. Điểm càng cao thì bài càng phù hợp với các tiêu chí: giá trị, độ tin cậy, tính thực tiễn, độ mới và tính nguyên bản.
-
-Khi xuất bản thành bài blog, điểm số chỉ dùng nội bộ để chọn bài và không hiển thị trong nội dung. Bài blog dùng đoạn văn ngắn, đánh số các mục chính, dùng bảng khi nhiều tin có cùng trường thông tin, có phần tóm tắt nhanh và lấy tin quan trọng nhất làm từ khóa SEO chính. Slug URL cũng phải lấy từ từ khóa chính và tính năng mới cụ thể, ví dụ `gpt-live-hoi-thoai-ai-lien-tuc`; tránh slug chung chung như `ban-tin-cong-nghe` hoặc chỉ có ngày tháng. Giữ slug ngắn, không dấu, ngăn cách bằng dấu gạch ngang và không tự đổi sau khi bài đã xuất bản. Không thêm mục “Phương pháp biên tập của SlimAI” nếu người dùng không yêu cầu.
-
-Nếu không đủ 15 bài tốt trong 24 giờ, skill có thể mở rộng phạm vi lên 48 giờ rồi tối đa 7 ngày. Skill không hạ điểm chất lượng chỉ để lấy đủ số lượng.
-
-## Lưu ý về nguồn
-
-- Mỗi liên kết phải dẫn trực tiếp đến đúng bài viết, không dẫn về trang chủ hoặc trang danh mục.
-- Tin được gọi là “cập nhật chính thức” phải đến từ website của hãng.
-- Nhận định của cộng đồng và dự báo tư vấn phải được phân biệt với dữ liệu đã kiểm chứng.
-- Một số trang có thể chặn tự động hóa hoặc yêu cầu đăng nhập; skill không vượt paywall hoặc cơ chế bảo vệ truy cập.
-
-## Cách thêm nguồn tin
-
-Cách đơn giản nhất là gửi cho Codex tên nguồn và đường dẫn. Ví dụ:
-
-```text
-Hãy thêm blog NVIDIA AI vào $slimai-ai-daily-digest.
-Kiểm tra đây có phải nguồn chính hãng không, tìm RSS nếu có,
-thử đọc nguồn và chỉ cập nhật skill khi nguồn đạt tiêu chí.
-```
-
-Nếu chưa có đường dẫn, bạn có thể yêu cầu:
-
-```text
-Hãy tìm nguồn chính thức của [tên tổ chức], đánh giá độ tin cậy
-và đề xuất thêm vào $slimai-ai-daily-digest. Chưa cập nhật cho đến khi tôi đồng ý.
-```
-
-Codex sẽ xếp nguồn vào đúng nhóm:
-
-| Nhóm nguồn | Dùng cho | Tệp cấu hình |
+| Loại nguồn | Nội dung | Tệp |
 |---|---|---|
-| Chính hãng | Model, tính năng, API và thông báo sản phẩm | `references/official-sources.json` |
-| Chiến lược | Nghiên cứu, khảo sát và góc nhìn quản trị | `references/strategic-sources.json` |
+| Chính hãng | Model, tính năng, API, thay đổi sản phẩm | `references/official-sources.json` |
+| Chiến lược | Nghiên cứu, khảo sát, quản trị và xu hướng doanh nghiệp | `references/strategic-sources.json` |
 | Cộng đồng | Case study, mã nguồn mở và hướng dẫn thực tế | `references/sources.json` |
 
-Một nguồn chỉ nên được thêm khi có tác giả hoặc tổ chức rõ ràng, nội dung nguyên bản, đường dẫn hoạt động và phù hợp với tiêu chí bản tin. Với nguồn cộng đồng, ưu tiên RSS/Atom. Nếu nguồn chính hãng hoặc chiến lược không có RSS, skill có thể đọc HTML công khai hoặc tìm kiếm giới hạn trong đúng tên miền.
+Nếu một nguồn không có RSS, skill có thể đọc HTML công khai hoặc tìm kiếm trong đúng tên miền. Mỗi liên kết được chọn phải dẫn thẳng đến bài gốc, không dẫn về trang chủ hoặc trang danh mục chung.
 
-Sau khi cập nhật, hãy yêu cầu Codex kiểm tra JSON, chạy thử nguồn mới và báo lỗi nếu trang chặn truy cập. Không thêm trang tổng hợp, bản sao nội dung, nguồn ẩn danh, trang chủ chung chung hoặc nguồn chủ yếu đăng quảng cáo. Tuyệt đối không lưu API key, cookie hay mật khẩu trong các tệp nguồn.
-
-## Đăng lên Telegram, fanpage hoặc email
-
-Skill có thể chuẩn bị nội dung cho từng kênh. Việc đăng hoặc gửi ra bên ngoài chỉ được thực hiện khi bạn yêu cầu rõ ràng.
-
-Không lưu bot token, mật khẩu, API key hoặc thông tin đăng nhập trong repository, file hướng dẫn hay nội dung bản tin. Nếu một token đã được chia sẻ trong cuộc trò chuyện, hãy thu hồi token đó và tạo token mới.
-
-## Đặt lịch tự động và gửi Telegram mỗi ngày
-
-### Bạn cần chuẩn bị gì?
-
-| Thông tin | Ví dụ | Lưu ý |
-|---|---|---|
-| Giờ gửi | `07:00` | Ghi rõ múi giờ, ví dụ `Asia/Ho_Chi_Minh` |
-| Bot token | Nhận từ `@BotFather` | Là thông tin bí mật, không đưa vào GitHub hoặc prompt đặt lịch |
-| Group chat ID | Một số thường bắt đầu bằng dấu `-` | Bot phải được thêm vào group và có quyền gửi tin |
-| Topic ID | Chỉ cần với group dạng forum | Bỏ qua nếu group không dùng topic |
-| Nội dung | Tiếng Việt, tối đa 15 bài | Có thể dùng cấu hình mặc định của skill |
-
-### Thiết lập lần đầu
-
-1. Tạo bot bằng `@BotFather`, thêm bot vào Telegram group và gửi thử một tin nhắn trong group.
-2. Mở một task riêng tư trong Codex và cung cấp bot token một lần để Codex lưu vào biến môi trường `SLIMAI_TELEGRAM_BOT_TOKEN`. Lưu chat ID vào `SLIMAI_TELEGRAM_CHAT_ID`; nếu dùng topic, lưu thêm `SLIMAI_TELEGRAM_THREAD_ID`.
-3. Khởi động lại ứng dụng Codex sau khi tạo biến môi trường, rồi yêu cầu gửi một bản tin thử.
-4. Chỉ tạo lịch sau khi bản thử đến đúng group và hiển thị đúng định dạng.
-
-Bạn có thể gửi yêu cầu thiết lập như sau:
+Để thêm một nguồn sau này, chỉ cần gửi:
 
 ```text
-Hãy lưu thông tin Telegram tôi cung cấp vào các biến môi trường
-SLIMAI_TELEGRAM_BOT_TOKEN và SLIMAI_TELEGRAM_CHAT_ID.
-Không in lại token, không ghi token vào repository hoặc nội dung task đặt lịch.
-Sau đó gửi một tin nhắn thử để xác nhận đúng group.
+Hãy thêm [tên nguồn hoặc URL] vào $slimai-ai-daily-digest.
+Kiểm tra đây có phải nguồn gốc đáng tin cậy không, tìm RSS nếu có,
+chạy thử rồi báo tôi tệp JSON nào đã được cập nhật.
 ```
 
-### Yêu cầu Codex tạo lịch
+## Bước 3: Chạy thử bản tin trước khi kết nối dịch vụ
 
-Trong ứng dụng Codex desktop, gửi câu lệnh:
+Nên chạy thử nội dung trong Codex trước:
 
 ```text
-Hãy tạo Scheduled Task trong task này, chạy hàng ngày lúc 07:00
-theo múi giờ Asia/Ho_Chi_Minh.
-
-Mỗi lần chạy, dùng $slimai-ai-daily-digest để tìm tin AI mới đạt tiêu chí.
-Chỉ gửi URL chưa từng gửi, dùng trạng thái tại
-work/slimai-ai-daily-digest-state.json để tránh trùng.
-
-Gửi bản tóm tắt tiếng Việt vào Telegram bằng các biến môi trường
-SLIMAI_TELEGRAM_BOT_TOKEN và SLIMAI_TELEGRAM_CHAT_ID.
-Dùng HTML, tắt link preview và chia thành nhiều phần nếu nội dung dài.
-Nếu không có tin mới đạt chuẩn, chỉ gửi một thông báo ngắn.
-Sau khi gửi, báo số phần và message ID nhưng không hiển thị token.
+Dùng $slimai-ai-daily-digest tạo bản tin AI hôm nay bằng tiếng Việt.
+Chỉ soạn bản nháp trong task, chưa đăng blog và chưa gửi Zalo.
+Viết cho người không chuyên kỹ thuật; giải thích ngắn các thuật ngữ khó.
 ```
 
-Sau khi tạo, mở mục **Scheduled** trong Codex để xem lịch và các lần chạy. Hãy kiểm tra vài bản tin đầu tiên trước khi để lịch hoạt động lâu dài.
+Hãy kiểm tra ba điểm:
 
-### Điều kiện để lịch chạy được
+- Tin nổi bật có đúng mối quan tâm của bạn không.
+- Mỗi tin có URL chính xác đến bài nguồn không.
+- Văn phong, độ dài và thứ tự các phần có dễ đọc không.
 
-- Nếu task dùng skill hoặc tệp trạng thái trên máy, máy phải bật, Codex desktop phải đang chạy và thư mục dự án vẫn tồn tại.
-- Task cần quyền truy cập Internet để đọc nguồn tin và gọi Telegram Bot API.
-- Telegram giới hạn mỗi tin nhắn văn bản ở 4.096 ký tự sau khi xử lý định dạng; skill sẽ tự chia nội dung thành nhiều phần.
-- Nếu đổi bot token hoặc group, hãy cập nhật biến môi trường rồi khởi động lại Codex.
-- Có thể tạm dừng, chạy thử, sửa giờ hoặc xem lịch sử tại mục **Scheduled**.
+Nếu chưa phù hợp, hãy nói rõ nguồn nào cần ưu tiên, chủ đề nào cần bỏ hoặc cách trình bày mong muốn. Những thay đổi ổn định có thể được cập nhật vào skill.
 
-Tài liệu chính thức: [Codex Scheduled Tasks](https://learn.chatgpt.com/docs/automations) · [Telegram Bot API](https://core.telegram.org/bots/api#sendmessage)
+## Bước 4: Kết nối website AIWeb qua API
 
-## Gửi bản tóm tắt qua Zalo Bot
+### 4.1. Tạo API key trên AIWeb
 
-Sau khi bài blog được đăng và kiểm tra ảnh preview, skill có thể gửi một bản tóm tắt vào Zalo. Bạn cần cung cấp riêng tư:
+1. Mở trang quản trị website AIWeb của bạn, thường là `https://ten-mien-cua-ban/login`.
+2. Đăng nhập bằng tài khoản quản trị.
+3. Mở **Settings → API Agent**.
+4. Tạo API key có quyền đọc/ghi bài blog và tải ảnh.
+5. Dùng nút kiểm tra API trong trang quản trị, hoặc yêu cầu Codex kiểm tra `ping/status`.
+6. Sao chép API key và chỉ cung cấp trong task riêng tư.
 
-| Thông tin | Biến môi trường | Lưu ý |
-|---|---|---|
-| Endpoint Zalo Bot | `SLIMAI_ZALO_BOT_ENDPOINT` | Ví dụ endpoint nhận `POST` JSON |
-| API key | `SLIMAI_ZALO_BOT_API_KEY` | Không đưa vào GitHub hoặc prompt đặt lịch |
+### 4.2. Cho Codex biết thông tin kết nối
 
-Tin nhắn Zalo dùng văn bản thuần, không dùng Markdown hoặc HTML. Nội dung được chia thành các nhóm có emoji, mỗi ý chính nằm trên một dòng và không giới hạn cố định ở 500 ký tự hay 7 gạch đầu dòng. Nếu API có giới hạn kỹ thuật thực tế, skill sẽ chia thành nhiều phần; CTA và URL blog chỉ xuất hiện ở phần cuối.
+Bạn cần hai biến môi trường:
 
-Thứ tự mặc định của bản tin là: **Góc nhìn chiến lược → Case study đã kiểm chứng → Tin chính thức từ hãng**. Với tin hãng, skill kiểm tra blog hoặc newsroom chính thức trước; release notes, changelog và tài liệu sản phẩm là nguồn bổ sung để xác minh chi tiết.
-
-Nếu McKinsey, Gartner, KPMG hoặc IBM không có nghiên cứu mới chưa từng dùng, skill sẽ kiểm tra bài blog hoặc insight mới nhất trên website chính thức. Bài dự phòng vẫn phải liên quan trực tiếp đến AI, có hướng áp dụng cụ thể và chưa xuất hiện trong bản tin trước; bài cũ phải ghi rõ ngày.
-
-Bài blog được viết cho người không chuyên kỹ thuật: dùng từ tiếng Việt dễ hiểu, giải thích thuật ngữ lạ trong ngoặc ở lần xuất hiện đầu tiên và thêm mục **Chú thích thuật ngữ** cuối bài khi có khái niệm mới hoặc khó.
-
-Skill dùng `scripts/send-zalo.mjs` để bảo đảm trường `text` luôn là chuỗi thuần. Có thể kiểm tra trước mà không gửi tin:
-
-```text
-node scripts/send-zalo.mjs --file <duong-dan-tin-nhan.txt> --dry-run
-```
-
-Không dùng kết quả `Get-Content` của PowerShell rồi chuyển thẳng sang JSON, vì metadata của tệp có thể làm `text` thành object/array và khiến Zalo nhận tin không có nội dung.
+| Biến | Ví dụ |
+|---|---|
+| `SLIMAI_AIWEB_BASE_URL` | `https://ai.slim.vn` |
+| `SLIMAI_AIWEB_API_KEY` | Khóa bắt đầu bằng `aiw_...` |
 
 Mẫu yêu cầu:
 
 ```text
-Sau khi đăng bài blog, hãy gửi bản tóm tắt qua Zalo Bot.
-Dùng SLIMAI_ZALO_BOT_ENDPOINT và SLIMAI_ZALO_BOT_API_KEY.
-
-Tin nhắn phải là văn bản thuần, không dùng Markdown hoặc HTML.
-Chia nội dung theo nhóm chủ đề có emoji, mỗi ý một dòng.
-Tóm tắt đủ các cập nhật quan trọng và tách riêng Gartner,
-McKinsey, KPMG, IBM nếu có nghiên cứu mới đạt chuẩn.
-
-Dòng cuối là:
-👉 Xem chi tiết kèm phân tích và đánh giá:
-{URL bài blog}
-
-Lưu URL và message ID thành công để tránh gửi trùng.
-Không hiển thị API key.
+Hãy kết nối $slimai-ai-daily-digest với website AIWeb của tôi.
+Lưu địa chỉ website vào SLIMAI_AIWEB_BASE_URL và API key tôi cung cấp
+vào SLIMAI_AIWEB_API_KEY. Không in lại khóa và không ghi khóa vào repository.
+Sau đó chỉ kiểm tra kết nối, chưa đăng bài.
 ```
 
-## Khi skill không hoạt động
+Khi kết nối thành công, skill có thể:
 
-- Kiểm tra đúng đường dẫn `...\.codex\skills\slimai-ai-daily-digest\SKILL.md`.
-- Mở task Codex mới sau khi cài đặt.
-- Gọi đúng tên `$slimai-ai-daily-digest`.
-- Kiểm tra máy có kết nối Internet.
-- Nếu RSS không phản hồi, yêu cầu Codex chạy lại hoặc mở rộng khoảng thời gian.
+- tạo tiêu đề và slug theo từ khóa của tin nổi bật nhất;
+- tạo hoặc tải ảnh bìa lên thư viện AIWeb;
+- chèn ảnh minh họa từ tư liệu gốc vào đúng mục khi phù hợp;
+- đăng hoặc cập nhật bài blog;
+- kiểm tra URL công khai, `og:title`, `og:description` và `og:image`.
+
+Ảnh bìa mặc định là JPEG 16:9, ưu tiên kích thước `1200 × 675 px` và dung lượng dưới `500 KB`.
+
+Tài liệu AIWeb dành cho chủ website nằm trong skill `aiweb`; nếu giao diện của bạn khác mô tả trên, hãy yêu cầu Codex dùng `$aiweb` để kiểm tra đúng phiên bản hiện tại.
+
+## Bước 5: Tạo Zalo Bot và kết nối group (không bắt buộc)
+
+Chỉ thực hiện bước này nếu bạn muốn tự động gửi phần tóm tắt sau khi bài blog đã được đăng.
+
+### 5.1. Chuẩn bị phía Zalo
+
+1. Tạo hoặc sử dụng một **Zalo Official Account (OA)** của doanh nghiệp.
+2. Nếu tự tích hợp, tạo ứng dụng tại Zalo Developers và cấu hình quyền OA/OpenAPI cần thiết.
+3. Nếu dùng nhà cung cấp Zalo Bot, làm theo hướng dẫn của nhà cung cấp để kết nối OA hoặc tài khoản bot với group đích.
+4. Thêm bot/tài khoản được dùng để gửi tin vào đúng group và gửi thử một tin thủ công.
+5. Lấy **endpoint** và **API key** của dịch vụ Zalo Bot.
+
+Tài liệu chính thức:
+
+- [Zalo Official Account](https://oa.zalo.me/)
+- [Tài liệu Zalo Developers](https://developers.zalo.me/docs/)
+- [Zalo OA OpenAPI](https://oa.zalo.me/home/function/extension)
+
+Lưu ý: skill không tự tạo OA hoặc tự thêm tài khoản vào group. Skill gửi nội dung qua endpoint Zalo Bot mà bạn đã cấu hình. Việc gửi vào group phải được dịch vụ Zalo Bot của bạn hỗ trợ; đây không phải là API key AIWeb và cũng không phải access token được lưu trong repository.
+
+### 5.2. Kết nối Zalo Bot với skill
+
+Bạn cần các biến sau:
+
+| Biến | Nội dung |
+|---|---|
+| `SLIMAI_ZALO_BOT_ENDPOINT` | Địa chỉ nhận yêu cầu gửi tin |
+| `SLIMAI_ZALO_BOT_API_KEY` | Khóa của dịch vụ Zalo Bot |
+| `SLIMAI_ZALO_MAX_CHARS` | Không bắt buộc; giới hạn kỹ thuật mỗi phần tin |
+
+Ví dụ endpoint dùng với dịch vụ Slim Zalo Bot:
+
+```text
+https://slim.vn/zalobot/api/v1/messages
+```
+
+Mẫu yêu cầu kết nối và kiểm tra:
+
+```text
+Hãy lưu endpoint Zalo Bot vào SLIMAI_ZALO_BOT_ENDPOINT và API key tôi cung cấp
+vào SLIMAI_ZALO_BOT_API_KEY. Không in lại hoặc ghi khóa vào repository.
+
+Gửi một tin nhắn thử duy nhất vào group đã cấu hình. Nếu thành công,
+báo message ID. Không gửi lại lần hai khi chưa xác định rõ lần đầu thất bại.
+```
+
+Tin Zalo đầu ra là văn bản thuần, gồm tiêu đề, các nhóm ý chính, mỗi ý một dòng và một CTA ở cuối:
+
+```text
+BẢN TIN SLIMAI NGÀY DD/MM
+
+Chủ đề nổi bật: ...
+
+📊 Góc nhìn chiến lược
+• ...
+
+💼 Case study thực tế
+• ...
+
+🤖 Tin chính thức từ hãng
+• ...
+
+👉 Xem chi tiết kèm phân tích và đánh giá:
+https://ten-mien-cua-ban/blog/slug-theo-tu-khoa
+```
+
+Nếu API giới hạn độ dài, skill chia thành nhiều phần và chỉ đặt CTA cùng URL ở phần cuối. Tin được gửi tuần tự để tránh xuất hiện hai bản giống nhau cùng lúc.
+
+## Bước 6: Chạy toàn bộ quy trình
+
+Sau khi đã kiểm tra AIWeb và Zalo Bot, hãy chạy thử toàn bộ luồng bằng câu lệnh:
+
+```text
+Dùng $slimai-ai-daily-digest chạy toàn bộ luồng bản tin hôm nay:
+thu thập nguồn → biên tập → tạo ảnh bìa → đăng blog AIWeb →
+xác minh URL và ảnh preview → gửi một bản tóm tắt vào Zalo group.
+
+Chỉ đăng khi có ít nhất một tin mới đạt chuẩn.
+Không gửi Telegram. Không hiển thị khóa bí mật.
+Cuối cùng báo URL blog, trạng thái og:image, số phần Zalo và message ID.
+```
+
+Trước khi gửi Zalo, skill phải xác nhận:
+
+- bài blog mở công khai;
+- ảnh preview là URL tuyệt đối, trả về HTTP 200 và đúng loại tệp ảnh;
+- URL blog chưa từng được gửi thành công;
+- nội dung Zalo là chuỗi văn bản, không phải object hoặc array.
+
+## Bước 7: Đặt lịch tự động trên Codex
+
+Chỉ đặt lịch sau khi luồng thủ công đã chạy thành công ít nhất một lần.
+
+Mẫu yêu cầu:
+
+```text
+Hãy tạo lịch Codex chạy hằng ngày lúc 07:00 theo múi giờ Asia/Saigon.
+
+Mỗi lần chạy, dùng $slimai-ai-daily-digest chạy toàn bộ luồng với trạng thái tại
+work/slimai-ai-daily-digest-state.json.
+
+Dùng các biến SLIMAI_AIWEB_BASE_URL, SLIMAI_AIWEB_API_KEY,
+SLIMAI_ZALO_BOT_ENDPOINT và SLIMAI_ZALO_BOT_API_KEY.
+Chỉ đăng blog và gửi Zalo khi có tin mới đạt chuẩn.
+Không gửi Telegram và không hiển thị khóa bí mật.
+```
+
+Máy chạy Codex cần được bật, có Internet và còn quyền truy cập thư mục chứa tệp trạng thái. Nếu chuyển máy, hãy sao lưu `work/slimai-ai-daily-digest-state.json` để tránh dùng lại tin cũ hoặc gửi trùng.
+
+## Checklist trước khi bật lịch hằng ngày
+
+- [ ] Skill đã được cài và nhận đúng tên `$slimai-ai-daily-digest`.
+- [ ] Danh sách nguồn và góc nhìn đã được duyệt.
+- [ ] Một bản tin nháp đã được kiểm tra thủ công.
+- [ ] AIWeb API đã kết nối và đăng thử thành công.
+- [ ] Ảnh bìa và ảnh preview hiển thị đúng.
+- [ ] Zalo Bot đã gửi đúng một tin vào đúng group.
+- [ ] Tin Zalo có URL chính xác đến bài blog.
+- [ ] Tệp trạng thái nằm ngoài thư mục skill và được giữ an toàn.
+- [ ] Lịch có đúng giờ và múi giờ.
+
+## Xử lý lỗi thường gặp
+
+| Hiện tượng | Cách xử lý |
+|---|---|
+| Codex không nhận skill | Kiểm tra đường dẫn tới `SKILL.md`, mở lại Codex và tạo task mới |
+| Nguồn không có bài | Kiểm tra RSS/HTML, ngày xuất bản và phạm vi 24–48 giờ; không hạ chuẩn để lấp quota |
+| URL nguồn dẫn về trang chủ | Yêu cầu Codex tìm canonical URL của đúng bài gốc |
+| AIWeb báo không có quyền | Tạo lại API key với quyền blog và media, rồi kiểm tra `ping/status` |
+| Blog không có ảnh preview | Kiểm tra `og:image` là URL tuyệt đối, HTTP 200 và có `content-type` ảnh |
+| Zalo nhận `array` nhưng không có nội dung | Dùng `scripts/send-zalo.mjs`; trường `text` phải là một chuỗi văn bản thuần |
+| Zalo gửi hai tin giống nhau | Kiểm tra message ID và state; không thử lại khi phản hồi lần đầu chưa rõ |
+| Bài hoặc tin bị lặp | Giữ và kiểm tra `work/slimai-ai-daily-digest-state.json` |
+
+## Các tệp quan trọng
+
+| Tệp | Mục đích |
+|---|---|
+| `SKILL.md` | Quy trình và tiêu chí chính của skill |
+| `references/official-sources.json` | Nguồn tin chính hãng |
+| `references/strategic-sources.json` | Nguồn góc nhìn chiến lược |
+| `references/sources.json` | Nguồn cộng đồng |
+| `scripts/run-digest.mjs` | Chạy toàn bộ luồng |
+| `scripts/send-zalo.mjs` | Chuẩn hóa và gửi nội dung Zalo |
+| `work/slimai-ai-daily-digest-state.json` | Trạng thái chống trùng; nằm ngoài skill |
+
+## Bảo mật
+
+- Không ghi API key vào README, JSON nguồn, log, nội dung blog hoặc GitHub.
+- Chỉ lưu bí mật trong biến môi trường hoặc kho bí mật của máy chạy Codex.
+- Không gửi lại đầy đủ khóa trong báo cáo kết quả.
+- Nếu khóa từng bị chia sẻ công khai, hãy thu hồi và tạo khóa mới.
+- Đọc dữ liệu trước khi cập nhật; kiểm tra lại bài công khai sau khi đăng.
 
 ## Thông tin
 
