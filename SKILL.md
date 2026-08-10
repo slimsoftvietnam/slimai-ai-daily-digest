@@ -77,6 +77,8 @@ Validate the edited JSON, test a new RSS feed with `scripts/fetch-rss.mjs`, and 
 
    - Open every priority-1 strategic source and use priority-2 sources for coverage gaps.
    - Search the default 30-day window. These sources do not need RSS. Follow each source's `accessMode` in `references/strategic-sources.json`.
+   - For each of McKinsey, Gartner, KPMG, and IBM, first look for a qualifying research report that has not appeared in state. If none exists, inspect the organization's newest relevant official blog, newsroom, or insight article. Prefer the newest unused article; do not repeat a sent URL merely to fill the section. Allow an older fallback article only when it remains practically relevant, and disclose its publication date or state that the page is undated.
+   - Apply the same evidence threshold to fallback blog posts. Reject generic service pages, promotional announcements without useful evidence, and commentary that offers no concrete management implication.
    - For `html_then_domain_search`, scrape the public HTML hub first: extract article title, resolved official URL, visible publication date, content type, and summary text; then open qualifying article pages for verification. Keep only links hosted on the organization's official domain or its official asset domain.
    - For `domain_search`, or when HTML returns 401/403, blocks automation, requires login, or hides its newest entries, use web search restricted to the exact official domain. Do not bypass robots rules, authentication, paywalls, or access controls.
    - Ignore navigation, event registration, service pages, author profiles, duplicate cards, sponsored placements, and undated marketing copy while scraping.
@@ -156,6 +158,7 @@ When the user requests a blog article:
 - Build the URL slug from the primary SEO keyword and its specific new capability, for example `gpt-live-hoi-thoai-ai-lien-tuc`. Keep it short, lowercase, ASCII, hyphen-separated, and stable after publication. Do not use a generic date-only or `ban-tin-cong-nghe` slug when a named product or feature provides clearer search intent. Before publishing, check for collisions and add the date only when needed for uniqueness. Never change an already-published slug automatically; use a permanent redirect when the user explicitly approves a URL migration.
 - Do not display selection scores, score labels, or internal categories such as `Major AI Update` and `Verified AI Case Study` in public blog copy. Keep scoring internal for ranking.
 - Start with a two-paragraph answer-first introduction, followed by `Tóm tắt nhanh` with four to six bullets.
+- Write for a nontechnical business reader. Prefer familiar Vietnamese words and short sentences. Explain a moderately uncommon term in parentheses on first use, for example `ROI (lợi ích thu về so với chi phí đã bỏ ra)`. Give a new or difficult concept one separate explanatory sentence. Add a short `Chú thích thuật ngữ` section near the end when the article uses concepts such as AI Agent, API, BYOK, MCP, subagent, vector database, or inference. Do not define familiar product names or repeat the same definition.
 - Number every major H2 section in reading order. Use this default sequence: `1. Tóm tắt nhanh`, `2. Góc nhìn chiến lược`, `3. Case study AI đã kiểm chứng`, `4. Cập nhật chính thức từ hãng`, followed by open-source projects, practical guides, recommended actions, and the conclusion when those sections have qualifying content. Keep H3 subsections unnumbered unless a section is procedural.
 - Use descriptive headings, paragraphs of two or three sentences, and bullets for steps, changes, or takeaways. Avoid repeating the same facts in the introduction, body, trends, and conclusion.
 - Use a compact Markdown table when several items share the same fields, especially the quick summary or strategic-source comparison. Keep cells short for mobile readability. Do not force long explanations, code, or single-item sections into tables.
@@ -207,6 +210,8 @@ Localize headings and summaries to the requested language. Keep source names, UR
 ### Zalo format
 
 Use this plain-text structure. Include only headings that have content and adapt their names to the day's stories.
+
+Write Zalo summaries for nontechnical readers. Replace uncommon English jargon with a clear Vietnamese phrase where possible; otherwise add a brief explanation in parentheses on the same line. Do not add a separate glossary to Zalo.
 
 ```text
 BẢN TIN SLIMAI NGÀY DD/MM

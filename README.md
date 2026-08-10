@@ -243,6 +243,10 @@ Tin nhắn Zalo dùng văn bản thuần, không dùng Markdown hoặc HTML. N�
 
 Thứ tự mặc định của bản tin là: **Góc nhìn chiến lược → Case study đã kiểm chứng → Tin chính thức từ hãng**. Với tin hãng, skill kiểm tra blog hoặc newsroom chính thức trước; release notes, changelog và tài liệu sản phẩm là nguồn bổ sung để xác minh chi tiết.
 
+Nếu McKinsey, Gartner, KPMG hoặc IBM không có nghiên cứu mới chưa từng dùng, skill sẽ kiểm tra bài blog hoặc insight mới nhất trên website chính thức. Bài dự phòng vẫn phải liên quan trực tiếp đến AI, có hướng áp dụng cụ thể và chưa xuất hiện trong bản tin trước; bài cũ phải ghi rõ ngày.
+
+Bài blog được viết cho người không chuyên kỹ thuật: dùng từ tiếng Việt dễ hiểu, giải thích thuật ngữ lạ trong ngoặc ở lần xuất hiện đầu tiên và thêm mục **Chú thích thuật ngữ** cuối bài khi có khái niệm mới hoặc khó.
+
 Skill dùng `scripts/send-zalo.mjs` để bảo đảm trường `text` luôn là chuỗi thuần. Có thể kiểm tra trước mà không gửi tin:
 
 ```text
