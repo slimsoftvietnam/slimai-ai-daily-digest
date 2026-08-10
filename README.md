@@ -149,7 +149,8 @@ Sau đó chỉ kiểm tra kết nối, chưa đăng bài.
 
 Khi kết nối thành công, skill có thể:
 
-- tạo tiêu đề và slug theo từ khóa của tin nổi bật nhất;
+- tạo tiêu đề theo mẫu `{tin nổi bật nhất} | Bản tin AI ngày DD/MM`, ví dụ `GitHub Models ngừng hoạt động | Bản tin AI ngày 10/08`;
+- tạo slug theo từ khóa của tin nổi bật nhất;
 - tạo hoặc tải ảnh bìa lên thư viện AIWeb;
 - chèn ảnh minh họa từ tư liệu gốc vào đúng mục khi phù hợp;
 - đăng hoặc cập nhật bài blog;

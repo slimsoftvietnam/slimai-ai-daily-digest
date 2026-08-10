@@ -13,6 +13,9 @@ export function validateDraft(manifest) {
   for (const field of ["slug", "title", "content", "seo_description"]) {
     if (typeof post?.[field] !== "string" || post[field].trim() === "") errors.push(`post.${field} is required`);
   }
+  if (post?.title && !/^.+\s\|\sBản tin AI ngày \d{2}\/\d{2}$/.test(post.title.trim())) {
+    errors.push("post.title must use: {primary story} | Bản tin AI ngày DD/MM");
+  }
   if (post?.slug && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(post.slug)) errors.push("post.slug must be lowercase ASCII kebab-case");
   if (/\b\d{1,3}\/100\b|SlimAI đánh giá|Major AI Update|Verified AI Case Study/i.test(post?.content ?? "")) errors.push("public content exposes internal scoring or category labels");
 
@@ -45,4 +48,3 @@ export async function main(argv = process.argv.slice(2)) {
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   main().catch((error) => { console.error(`[validate-draft] ${error.message}`); process.exit(1); });
 }
-
