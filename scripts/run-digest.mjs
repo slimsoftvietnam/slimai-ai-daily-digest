@@ -7,6 +7,7 @@ import { collectFeeds } from "./fetch-rss.mjs";
 import { publishBlogPost, uploadAsset } from "./lib/aiweb.mjs";
 import { markSentUrls, readState, unseenArticles, writeStateAtomic } from "./lib/state-store.mjs";
 import { canonicalizeUrl } from "./lib/url.mjs";
+import { versionedFeaturedSourceUrl } from "./lib/asset-version.mjs";
 import { sendZaloDigest } from "./send-zalo.mjs";
 import { validateDraft } from "./validate-draft.mjs";
 import { verifyPublicBlog } from "./verify-blog.mjs";
@@ -43,7 +44,12 @@ async function prepareAssets(manifest, manifestDir) {
   const uploaded = [];
   for (const asset of manifest.assets ?? []) {
     if (!asset.id || !asset.file || !asset.sourceUrl) throw new Error("Each asset requires id, file, and sourceUrl");
-    const upload = await uploadAsset(resolve(manifestDir, asset.file), asset.sourceUrl);
+    const assetPath = resolve(manifestDir, asset.file);
+    let uploadSourceUrl = asset.sourceUrl;
+    if (asset.featured) {
+      uploadSourceUrl = versionedFeaturedSourceUrl(asset.sourceUrl, await readFile(assetPath));
+    }
+    const upload = await uploadAsset(assetPath, uploadSourceUrl);
     content = content.replaceAll(`{{asset:${asset.id}}}`, upload.absoluteUrl);
     if (asset.featured) featuredImage = upload.localPath;
     uploaded.push({ id: asset.id, localPath: upload.localPath, absoluteUrl: upload.absoluteUrl });
@@ -125,4 +131,3 @@ main().catch((error) => {
   console.error(`[run-digest] ${error.message}`);
   process.exit(1);
 });
-
